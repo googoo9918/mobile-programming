@@ -1,7 +1,8 @@
 # mobile-programming
 
 ## 패키지 구조
-com.example.game
+```bash
+com.example.game <br>
 ├── model
 │   ├── GameManager
 │   ├── Board
@@ -39,7 +40,7 @@ com.example.game
     ├── GameEventListener
     ├── GameErrorListener
     └── OnItemSelectedListener
-
+```
 ## 클래스 설명
 ### 1. Model 계층
 - `GameManager`
