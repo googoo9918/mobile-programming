@@ -398,3 +398,157 @@ com.example.game <br>
      V                                                                          |
 [ ResultActivity ]                                                              |
 ```
+
+```bash
+[ 사용자 ]
+     |
+     | 터치 이벤트, 버튼 클릭 등
+     V
+[ GameActivity ] --------------------------------+
+     |                                           |
+     | onCardClicked(position)                   |
+     | onItemUseButtonClicked()                  |
+     V                                           |
+[ GameController ] implements GameEventListener, GameErrorListener, OnItemSelectedListener, DataReceivedListener
+     |                                           ^
+     | 게임 로직 처리 요청                          |
+     V                                           |
+[ GameManager ] ----------------------------------+
+     |                                           |
+     | flipCard(position)                        |
+     | processItemEffect(itemEffect)             |
+     | updateGameState(gameState)                |
+     V                                           |
+[ Board ]                                        |
+     |                                           |
+     | flipCard(position)                        |
+     V                                           |
+[ Card ] / [ItemCard ]                           |
+     |                                           |
+     | flip()                                    |
+     V                                           |
+[ Card ] 상태 변경                                 |
+     |                                           |
+     | 매치 검사 및 아이템 획득 여부 확인              |
+     V                                           |
+[ GameManager ]                                  |
+     |                                           |
+     | 게임 이벤트 발생                             |
+     |--Event--> [GameEventListener]             |
+     |                                           |
+     | 게임 에러 발생 시                            |
+     |--Event--> [GameErrorListener]             |
+     V                                           |
+[ GameController ] -------------------------------+
+     |                                           |
+     | 이벤트 처리 및 뷰 업데이트 요청                |
+     V                                           |
+[ GameActivity ] --------------------------------+
+     |                                           |
+     | updateCard(position, card)                |
+     | showMatch(position1, position2)           |
+     | showItemAcquired(itemCard)                |
+     | updatePlayerItems(items)                  |
+     | updateCurrentPlayer(player)               |
+     | navigateToResultActivity(gameResult)      |
+     V                                           |
+[ CardAdapter ] / [ItemAdapter ]                 |
+     |                                           |
+     | UI 갱신                                    |
+     V                                           |
+[ 화면 ]                                          |
+                                                 |
+[ GameActivity ]                                 |
+     |                                           |
+     | showItemDialog(items)                     |
+     V                                           |
+[ ItemDialogFragment ] --------------------------+
+     |                                           |
+     | 사용자 아이템 선택                           |
+     | onItemSelected(itemType)                  |
+     |--Event--> [OnItemSelectedListener]        |
+     V                                           |
+[ GameController ] -------------------------------+
+     |                                           |
+     | 아이템 사용 처리                             |
+     V                                           |
+[ Player ] --------------------------------------+
+     |                                           |
+     | useItem(itemType, gameManager)            |
+     V                                           |
+[ ItemEffect ] (인터페이스)                        |
+     |                                           |
+     | applyEffect(gameManager, player)          |
+     V                                           |
+[ 구현된 ItemEffect 클래스들 ]                      |
+     |                                           |
+     | 효과에 따른 게임 및 플레이어 상태 변경          |
+     V                                           |
+[ GameManager ] ----------------------------------+
+     |                                           |
+     | 게임 상태 변경 및 이벤트 발생                  |
+     |--Event--> [GameEventListener]             |
+     V                                           |
+[ GameController ] -------------------------------+
+     |                                           |
+     | 뷰 업데이트 요청                             |
+     V                                           |
+[ GameActivity ] --------------------------------+
+                                                 |
+[ GameController ] <--> [ NetworkService ]       |
+     |                    implements NetworkService
+     | sendData(gameState)                       |
+     | setDataReceivedListener(this)             |
+     V                                           |
+[ NetworkServiceImpl ]                           |
+     |                                           |
+     | 데이터 직렬화 및 전송                        |
+     | 수신된 데이터 역직렬화 및 전달                 |
+     V                                           |
+[ 상대방의 NetworkService ]                       |
+     |                                           |
+     | onDataReceived(gameState)                 |
+     |--Event--> [DataReceivedListener]          |
+     V                                           |
+[ 상대방의 GameController ] ----------------------+
+     |                                           |
+     | updateGameState(gameState)                |
+     V                                           |
+[ 상대방의 GameManager ]                          |
+     |                                           |
+     | 게임 상태 업데이트 및 이벤트 발생              |
+     |--Event--> [GameEventListener]             |
+     V                                           |
+[ 상대방의 GameController ] ----------------------+
+     |                                           |
+     | 뷰 업데이트 요청                            |
+     V                                           |
+[ 상대방의 GameActivity ]                          |
+     |                                           |
+     | UI 갱신                                    |
+     V                                           |
+[ 화면 ]                                          |
+                                                 |
+[ GameManager ]                                  |
+     |                                           |
+     | getGameResult()                           |
+     V                                           |
+[ GameResult ]                                   |
+     |                                           |
+     | 게임 결과 정보 (승자, 점수 등)                |
+     V                                           |
+[ GameController ]                               |
+     |                                           |
+     | navigateToResultActivity(gameResult)      |
+     V                                           
+[ GameActivity ]                                 |
+     |                                           |
+     | ResultActivity 호출                        |
+     V                                           |
+[ ResultActivity ]                               |
+     |                                           |
+     | 결과 화면 표시                              |
+     V                                           |
+[ 화면 ]                                        |
+
+```
