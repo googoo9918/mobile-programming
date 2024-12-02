@@ -10,10 +10,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MobleProgramming"
+        android:theme="@style/Theme.MobileProgramming"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name="kr.co.example.mobileprogramming.view.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,6 +21,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="kr.co.example.mobileprogramming.view.GameActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="kr.co.example.mobileprogramming.view.ResultActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

@@ -1,6 +1,6 @@
 package kr.co.example.mobileprogramming.view;
 
-import static android.os.Build.VERSION_CODES.R;
+import kr.co.example.mobleprogramming.R;
 
 import android.os.Bundle;
 import android.widget.Button;
@@ -23,11 +23,13 @@ import kr.co.example.mobileprogramming.model.itemeffects.ItemEffect;
 import kr.co.example.mobileprogramming.network.NetworkService;
 import kr.co.example.mobileprogramming.network.NetworkServiceImpl;
 
+
+
 public class GameActivity extends AppCompatActivity {
     private GameController gameController;
-    private RecyclerView gameBoard;
-    private TextView scoreTextView;
-    private Button itemUseButton;
+//    private RecyclerView gameBoard;
+//    private TextView scoreTextView;
+//    private Button itemUseButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +37,9 @@ public class GameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game);
 
         // UI 요소 초기화
-        gameBoard = findViewById(R.id.game_board);
-        scoreTextView = findViewById(R.id.score_text_view);
-        itemUseButton = findViewById(R.id.item_use_button);
+//        gameBoard = findViewById(R.id.game_board);
+//        scoreTextView = findViewById(R.id.score_text_view);
+//        itemUseButton = findViewById(R.id.item_use_button);
 
         // 게임 설정 정보 가져오기 (예: Intent로부터)
         Difficulty difficulty = Difficulty.NORMAL;

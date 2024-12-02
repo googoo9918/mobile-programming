@@ -1,3 +1,39 @@
 <resources>
-    <string name="app_name">MobleProgramming</string>
+    <string name="app_name">같은 그림 찾기</string>
+    <string name="start">Game Start</string>
+    <string name="title_image_desc">같은 그림 찾기 로고</string>
+    <string name="airplaneCard">비행기 카드</string>
+    <string name="backCard">카드 뒷면</string>
+    <string name="bananaCard">바나나 카드</string>
+    <string name="bearCard">곰 카드</string>
+    <string name="beerCard">맥주 카드</string>
+    <string name="bellCard">종 카드</string>
+    <string name="birdCard">새 카드</string>
+    <string name="candyCard">사탕 카드</string>
+    <string name="dollCard">인형 카드</string>
+    <string name="dolphinCard">돌고래 카드</string>
+    <string name="flowerCard">꽃 카드</string>
+    <string name="freedomCard">자유의 여신상 카드</string>
+    <string name="gameCard">조이스틱 카드</string>
+    <string name="grapeCard">포도 카드</string>
+    <string name="guitarCard">기타 카드</string>
+    <string name="gunCard">총 카드</string>
+    <string name="hamburgerCard">햄버거 카드</string>
+    <string name="heartCard">하트 카드</string>
+    <string name="motocycleCard">오토바이 카드</string>
+    <string name="mushroomCard">버섯 카드</string>
+    <string name="paletteCard">팔레트 카드</string>
+    <string name="pandaCard">판다 카드</string>
+    <string name="pocketCard">주머니 카드</string>
+    <string name="pumpkinCard">호박 카드</string>
+    <string name="ribbonCard">리본 카드</string>
+    <string name="singballCard">싱볼 카드</string>
+    <string name="sofaCard">소파 카드</string>
+    <string name="spaceCard">우주 카드</string>
+    <string name="tennisCard">테니스 카드</string>
+    <string name="towerCard">타워 카드</string>
+    <string name="treeCard">나무 카드</string>
+    <string name="ufoCard">우주선 카드</string>
+    <string name="yutnoriCard">윷놀이 카드</string>
+
 </resources>
