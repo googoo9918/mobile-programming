@@ -1,0 +1,2 @@
+kr.co.example.mobleprogramming.test:style/WhiteBackgroundTheme = 0x7f010001
+kr.co.example.mobleprogramming.test:style/WhiteBackgroundDialogTheme = 0x7f010000

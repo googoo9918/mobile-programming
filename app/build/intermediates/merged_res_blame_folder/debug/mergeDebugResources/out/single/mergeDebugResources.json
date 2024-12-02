@@ -1,0 +1,358 @@
+[
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_yutnori.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/yutnori.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_tree.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_tree.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/mipmap-hdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_background.xml.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_background.xml"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_panda.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_panda.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_back.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/back.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_rounded_button.xml.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/rounded_button.xml"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/xml_backup_rules.xml.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_airplane.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_airplane.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_ribbon.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/ribbon.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_hamburger.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_hamburger.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_sofa.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_sofa.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_bear.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_bear.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_ribbon.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_ribbon.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_candy.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_candy.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_ufo.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_ufo.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_ic_launcher_background.xml.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_bird.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/bird.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_bell.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/bell.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_dolphin.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/dolphin.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_airplane.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/airplane.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_sofa.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/sofa.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_tree.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/tree.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_dolphin.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_dolphin.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_banana.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/banana.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_palette.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/palette.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_tennis.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/tennis.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_beer.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/beer.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_palette.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_palette.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_bird.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_bird.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/layout_activity_gamesetting.xml.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/layout/activity_gamesetting.xml"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_guitar.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_guitar.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/mipmap-mdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_guitar.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/guitar.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_game.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/game.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/layout_activity_game.xml.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/layout/activity_game.xml"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_yutnori.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_yutnori.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_beer.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_beer.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_tennis.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_tennis.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_doll.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_doll.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_tower.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/tower.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/layout_activity_result.xml.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/layout/activity_result.xml"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_motocycle.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_motocycle.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_banana.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_banana.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/mipmap-xhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/mipmap-xxxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/layout_activity_main.xml.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/layout/activity_main.xml"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_space.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/space.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_grape.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/grape.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/mipmap-xxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_motocycle.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/motocycle.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_heart.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_heart.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_game.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_game.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_freedom.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_freedom.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_ufo.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/ufo.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_freedom.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/freedom.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_background_card.xml.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/background_card.xml"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_pocket.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_pocket.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_space.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_space.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_singball.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/singball.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_gun.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_gun.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_mushroom.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_mushroom.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/mipmap-hdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/mipmap-mdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/layout_activity_game.xml.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/layout/activity_game.xml"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_tower.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_tower.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_candy.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/candy.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_pumpkin.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/pumpkin.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_hamburger.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/hamburger.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_flower.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_flower.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_flower.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/flower.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/mipmap-xxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_panda.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/panda.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/xml_data_extraction_rules.xml.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_bell.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_bell.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_doll.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/doll.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/mipmap-xxxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_singball.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_singball.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_pocket.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/pocket.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_mushroom.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/mushroom.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_title.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/title.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_pumpkin.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_pumpkin.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_bear.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/bear.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_gun.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/gun.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_card_grape.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/card_grape.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/drawable_heart.png.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/drawable/heart.png"
+    },
+    {
+        "merged": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-debug-31:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "/Users/seongtaehyeon/.gradle/daemon/8.7/kr.co.example.mobleprogramming.app-main-33:/mipmap-xhdpi/ic_launcher.webp"
+    }
+]
