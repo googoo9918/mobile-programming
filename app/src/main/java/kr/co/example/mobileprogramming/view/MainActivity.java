@@ -20,11 +20,11 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-
         Button startButton = findViewById(R.id.startButton);
 
+        //Game Start 버튼 클릭 시 GameSettingActivity 로 화면 전환
         startButton.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, GameActivity.class);
+            Intent intent = new Intent(MainActivity.this, GameSettingActivity.class);
             startActivity(intent);
         });
     }

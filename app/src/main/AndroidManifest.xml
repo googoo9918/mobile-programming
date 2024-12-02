@@ -22,6 +22,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="kr.co.example.mobileprogramming.view.GameSettingActivity"
+            android:exported="false" />
+
+        <activity
             android:name="kr.co.example.mobileprogramming.view.GameActivity"
             android:exported="false" />
 

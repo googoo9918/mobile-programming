@@ -38,7 +38,7 @@
             android:layout_marginTop="10dp"
             android:contentDescription="@string/tennisCard"
             android:rotation="-30"
-            android:src="@drawable/tennis" />
+            android:src="@drawable/card_tennis" />
 
         <ImageView
             android:id="@+id/image2"
@@ -49,7 +49,7 @@
             android:layout_marginTop="-20dp"
             android:contentDescription="@string/singballCard"
             android:rotation="-10"
-            android:src="@drawable/singball" />
+            android:src="@drawable/card_singball" />
 
         <ImageView
             android:id="@+id/image3"
@@ -60,7 +60,7 @@
             android:layout_marginTop="-30dp"
             android:contentDescription="@string/paletteCard"
             android:rotation="5"
-            android:src="@drawable/palette" />
+            android:src="@drawable/card_palette" />
 
         <ImageView
             android:id="@+id/image4"
@@ -70,7 +70,7 @@
             android:layout_marginTop="80dp"
             android:contentDescription="@string/heartCard"
             android:rotation="10"
-            android:src="@drawable/heart" />
+            android:src="@drawable/card_heart" />
 
     </FrameLayout>
 

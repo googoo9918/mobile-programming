@@ -2,14 +2,24 @@ package kr.co.example.mobileprogramming.view;
 
 import kr.co.example.mobleprogramming.R;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.lang.reflect.Field;
 
 import kr.co.example.mobileprogramming.controller.GameController;
 import kr.co.example.mobileprogramming.model.Board;
@@ -31,10 +41,38 @@ public class GameActivity extends AppCompatActivity {
 //    private TextView scoreTextView;
 //    private Button itemUseButton;
 
+    private TextView roundText;
+    private TextView difficultyText;
+    private TextView modeText;
+
+    private static final int BOARD_SIZE = 36; // 6x6 보드
+    private static final int PAIRS_COUNT = 16; // 필요한 페어 수
+
+    private List<Integer> cardIds; // 드로어블 리소스 ID 목록
+    private Integer[] boardCards; // 보드에 배치될 카드 배열
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
+        Intent intent = getIntent();
+        int roundInfo = intent.getIntExtra("ROUND", 3);
+        String difficultyInfo = intent.getStringExtra("DIFFICULTY");
+        int modeInfo = intent.getIntExtra("MODE", 1);
+
+        roundText = findViewById(R.id.chooseround);
+        difficultyText = findViewById(R.id.choosedifficulty);
+        modeText = findViewById(R.id.choosemode);
+
+        roundText.setText("라운드: " + String.valueOf(roundInfo));
+        difficultyText.setText("난이도: " + difficultyInfo);
+        modeText.setText("게임 모드: " + String.valueOf(modeInfo)+"인용");
+
+
+        initializeCardIds();
+        setupBoard();
+        displayCards();
 
         // UI 요소 초기화
 //        gameBoard = findViewById(R.id.game_board);
@@ -56,6 +94,98 @@ public class GameActivity extends AppCompatActivity {
 
         // 카드 클릭 이벤트 처리
         // 카드 어댑터를 설정하고 클릭 리스너에서 gameController.onCardSelected(position) 호출
+    }
+
+    private void initializeCardIds() {
+        // drawable 폴더의 모든 카드 이미지 리소스 ID를 리스트에 추가
+        cardIds = new ArrayList<>();
+        Field[] drawableFields = R.drawable.class.getFields();
+        for (Field field : drawableFields) {
+            if (field.getName().startsWith("card_")) { // card_로 시작하는 리소스만 선택
+                try {
+                    cardIds.add(field.getInt(null));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void setupBoard() {
+        boardCards = new Integer[BOARD_SIZE];
+        Arrays.fill(boardCards, null);
+
+        // 카드 중 18개(36/2)를 랜덤하게 선택하도록 수정
+        Collections.shuffle(cardIds);
+        List<Integer> selectedCards = cardIds.subList(0, BOARD_SIZE/2);
+
+        // 선택된 카드들을 두 번씩 보드에 랜덤하게 배치
+        List<Integer> positions = new ArrayList<>();
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            positions.add(i);
+        }
+        Collections.shuffle(positions);
+
+        int positionIndex = 0;
+        for (Integer cardId : selectedCards) {
+            // 각 카드를 두 번 배치
+            boardCards[positions.get(positionIndex)] = cardId;
+            boardCards[positions.get(positionIndex + 1)] = cardId;
+            positionIndex += 2;
+        }
+    }
+
+    private void displayCards() {
+        GridLayout gridLayout = findViewById(R.id.cardGrid);
+        gridLayout.setRowCount(6);
+        gridLayout.setColumnCount(6);
+        int index = 0;
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int screenWidth = displayMetrics.widthPixels;
+
+        int cardSize = (screenWidth - 150) / 6;
+
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 6; j++) {
+                FrameLayout cardFrame = new FrameLayout(this);
+                GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+                params.width = cardSize;
+                params.height = cardSize;
+                params.rowSpec = GridLayout.spec(i);
+                params.columnSpec = GridLayout.spec(j);
+                params.setMargins(4, 4, 4, 4);
+
+                ImageView cardImage = new ImageView(this);
+                cardImage.setLayoutParams(new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.MATCH_PARENT
+                ));
+                cardImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
+                cardImage.setImageResource(R.drawable.back);
+                cardImage.setTag(boardCards[index]);
+
+                final int cardIndex = index;
+                cardImage.setOnClickListener(v -> onCardClick(cardImage, cardIndex));
+
+                cardFrame.addView(cardImage);
+                cardFrame.setLayoutParams(params);
+                gridLayout.addView(cardFrame);
+
+                index++;
+            }
+        }
+    }
+
+    private void onCardClick(ImageView cardImage, int position) {
+        // 카드 클릭 시 카드를 앞면으로 뒤집기
+        Integer cardId = boardCards[position];
+        if (cardId != null) {
+            cardImage.setImageResource(cardId);
+        }
+        // 여기에 게임 로직 추가 (매칭 확인 등)
     }
 
     // UI 업데이트 메서드
