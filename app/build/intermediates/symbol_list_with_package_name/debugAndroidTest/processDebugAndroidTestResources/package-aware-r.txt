@@ -1,3 +1,0 @@
-kr.co.example.mobleprogramming.test
-style WhiteBackgroundDialogTheme
-style WhiteBackgroundTheme

@@ -1,5 +1,0 @@
-kr.co.example.mobleprogramming.test.app-core-1.6.1-0 /Users/seongtaehyeon/.gradle/caches/transforms-4/6830a08a238b54d0dac17148d16fdb04/transformed/core-1.6.1/res
-kr.co.example.mobleprogramming.test.app-androidTest-1 /Users/seongtaehyeon/AndroidStudioProjects/mobile-programming/app/build/generated/res/resValues/androidTest/debug
-kr.co.example.mobleprogramming.test.app-mergeDebugAndroidTestResources-2 /Users/seongtaehyeon/AndroidStudioProjects/mobile-programming/app/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/merged.dir
-kr.co.example.mobleprogramming.test.app-mergeDebugAndroidTestResources-3 /Users/seongtaehyeon/AndroidStudioProjects/mobile-programming/app/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/stripped.dir
-kr.co.example.mobleprogramming.test.app-debugAndroidTest-4 /Users/seongtaehyeon/AndroidStudioProjects/mobile-programming/app/build/intermediates/merged_res/debugAndroidTest/mergeDebugAndroidTestResources
