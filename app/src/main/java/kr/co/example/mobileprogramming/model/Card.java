@@ -8,10 +8,9 @@ public class Card {
     //카드에 표시할 이미지 경로 or 리소스 이름
     private String imageResource;
 
-    public Card(int id, CardType type, String imageResource) {
+    public Card(int id, CardType type) {
         this.id = id;
         this.type = type;
-        this.imageResource = imageResource;
         this.isFlipped = false;
     }
 

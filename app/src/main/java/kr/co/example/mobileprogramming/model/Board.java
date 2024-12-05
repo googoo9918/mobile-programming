@@ -1,5 +1,7 @@
 package kr.co.example.mobileprogramming.model;
 
+import android.util.Log;
+
 import java.util.List;
 
 public class Board {
@@ -7,14 +9,17 @@ public class Board {
     private int rows;
     private int columns;
 
-    public Board(int rows, int columns, List<Card> cards) {
-        this.rows = rows;
-        this.columns = columns;
+    public Board(List<Card> cards) {
+        this.rows = 6;
+        this.columns = 6;
         this.cards = cards;
     }
 
     public boolean flipCard(int position) {
-        if (position < 0 || position >= cards.size()) return false;
+        if (position < 0 || position >= cards.size()) {
+            Log.d("Board", "flipcard index error");
+            return false;
+        }
         Card card = cards.get(position);
         if (card.isFlipped()) return false;
         card.flip();

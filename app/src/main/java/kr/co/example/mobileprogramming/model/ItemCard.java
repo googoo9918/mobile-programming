@@ -4,8 +4,8 @@ package kr.co.example.mobileprogramming.model;
 public class ItemCard extends Card {
     private ItemType itemType;
 
-    public ItemCard(int id, String imageResource, ItemType itemType) {
-        super(id, CardType.ITEM, imageResource);
+    public ItemCard(int id, ItemType itemType) {
+        super(id, CardType.ITEM);
         this.itemType = itemType;
     }
 

@@ -1,5 +1,7 @@
 package kr.co.example.mobileprogramming.controller;
 
+import android.util.Log;
+
 import kr.co.example.mobileprogramming.events.GameErrorListener;
 import kr.co.example.mobileprogramming.events.GameEventListener;
 import kr.co.example.mobileprogramming.events.OnItemSelectedListener;
@@ -33,7 +35,13 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
     // 사용자 입력 처리 메서드
     public void onCardSelected(int position) {
         boolean success = gameManager.flipCard(position);
-        if (!success) {
+        if (success) {
+            Card card = gameManager.getBoard().getCardAt(position);
+            gameActivity.updateCard(position, card);
+            Log.d("GameAController","Card flipped at" + position);
+        }
+        else {
+            Log.d("GameAController","Card flipped failed at" + position);
             onInvalidMove("선택한 카드를 뒤집을 수 없습니다.");
         }
     }

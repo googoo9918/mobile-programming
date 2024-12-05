@@ -76,13 +76,13 @@ public class GameActivity extends AppCompatActivity {
 
         // 게임 설정 정보 가져오기 (예: Intent로부터)
         Difficulty difficulty = Difficulty.NORMAL;
-        int totalRounds = 5;
+//        int totalRounds = 5;
         Player player1 = new Player("Player 1");
         //Player player2 = new Player("Player 2");
         Player player2 = (modeInfo == 2) ? new Player("Player 2") : null;
 
         // GameManager 및 NetworkService 생성
-        GameManager gameManager = new GameManager(difficulty, totalRounds, player1, player2);
+        GameManager gameManager = new GameManager(Difficulty.NORMAL, roundInfo, player1, player2); // fix difficulty NORMAL
         NetworkService networkService = new NetworkServiceImpl();
 
         initializeCardIds();
@@ -139,6 +139,8 @@ public class GameActivity extends AppCompatActivity {
 
     private void displayCards() {
         GridLayout gridLayout = findViewById(R.id.cardGrid);
+        gridLayout.removeAllViews();
+
         gridLayout.setRowCount(6);
         gridLayout.setColumnCount(6);
         int index = 0;
@@ -170,7 +172,8 @@ public class GameActivity extends AppCompatActivity {
                 cardImage.setTag(boardCards[index]);
 
                 final int cardIndex = index;
-                cardImage.setOnClickListener(v -> onCardClick(cardImage, cardIndex));
+//                cardImage.setOnClickListener(v -> onCardClick(cardImage, cardIndex));
+                cardImage.setOnClickListener(v -> gameController.onCardSelected(cardIndex));
 
                 cardFrame.addView(cardImage);
                 cardFrame.setLayoutParams(params);
@@ -197,6 +200,15 @@ public class GameActivity extends AppCompatActivity {
 
     public void updateCard(int position, Card card) {
         // 카드 상태 업데이트
+        GridLayout gridLayout = findViewById(R.id.cardGrid);
+        FrameLayout cardFrame = (FrameLayout) gridLayout.getChildAt(position);
+        ImageView cardImage = (ImageView) cardFrame.getChildAt(0);
+
+        if (card.isFlipped()) {
+            cardImage.setImageResource(card.getId());
+        } else {
+            cardImage.setImageResource(R.drawable.back);
+        }
     }
 
     public void showItemDialog(List<ItemEffect> items) {

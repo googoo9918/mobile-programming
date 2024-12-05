@@ -1,0 +1,222 @@
+[
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_game.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_game.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_panda.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_panda.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_pocket.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_pocket.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_flower.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_flower.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_doll.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_doll.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_candy.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_candy.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_ic_launcher_background.xml.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_bell.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_bell.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/xml_data_extraction_rules.xml.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_dolphin.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_dolphin.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_title.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/title.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_grape.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_grape.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_motocycle.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_motocycle.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_ufo.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_ufo.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_singball.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_singball.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_tower.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_tower.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_space.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_space.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_tennis.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_tennis.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_back.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/back.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_banana.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_banana.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_yutnori.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_yutnori.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/mipmap-xxxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/mipmap-xhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_guitar.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_guitar.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/mipmap-xxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_sofa.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_sofa.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/mipmap-xxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_beer.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_beer.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/mipmap-hdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/layout_activity_result.xml.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/layout/activity_result.xml"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/layout_activity_gamesetting.xml.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/layout/activity_gamesetting.xml"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_heart.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_heart.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_bear.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_bear.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_hamburger.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_hamburger.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_palette.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_palette.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_tree.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_tree.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_background_card.xml.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/background_card.xml"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_airplane.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_airplane.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_freedom.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_freedom.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/mipmap-mdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_bird.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_bird.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/xml_backup_rules.xml.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_rounded_button.xml.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/rounded_button.xml"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_ribbon.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_ribbon.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/layout_activity_game.xml.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/layout/activity_game.xml"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_mushroom.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_mushroom.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/layout_activity_main.xml.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/layout/activity_main.xml"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_pumpkin.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_pumpkin.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/mipmap-mdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/mipmap-xxxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/drawable_card_gun.png.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/drawable/card_gun.png"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/mipmap-hdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "kr.co.example.mobleprogramming.app-debug-31:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "kr.co.example.mobleprogramming.app-main-33:/mipmap-xhdpi/ic_launcher.webp"
+    }
+]

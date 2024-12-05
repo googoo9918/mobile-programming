@@ -1,5 +1,8 @@
 package kr.co.example.mobileprogramming.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import kr.co.example.mobileprogramming.events.GameErrorListener;
 import kr.co.example.mobileprogramming.events.GameEventListener;
 
@@ -21,11 +24,16 @@ public class GameManager {
         this.player2 = player2;
         this.currentPlayer = player1;
         this.currentRound = 1;
-        initializeBoard();
+
     }
 
-    private void initializeBoard() {
+    public void initializeBoard(Integer[] boardCards) {
         // 난이도에 따라 보드 크기 및 카드 생성
+        List<Card> cards = new ArrayList<>();
+        for (Integer cardId : boardCards) {
+            cards.add(new Card(cardId, CardType.NORMAL));
+        }
+        this.board = new Board(cards);
     }
 
     public boolean flipCard(int position) {
