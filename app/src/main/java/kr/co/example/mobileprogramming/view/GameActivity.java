@@ -69,11 +69,6 @@ public class GameActivity extends AppCompatActivity {
         difficultyText.setText("난이도: " + difficultyInfo);
         modeText.setText("게임 모드: " + String.valueOf(modeInfo)+"인용");
 
-
-        initializeCardIds();
-        setupBoard();
-        displayCards();
-
         // UI 요소 초기화
 //        gameBoard = findViewById(R.id.game_board);
 //        scoreTextView = findViewById(R.id.score_text_view);
@@ -83,14 +78,21 @@ public class GameActivity extends AppCompatActivity {
         Difficulty difficulty = Difficulty.NORMAL;
         int totalRounds = 5;
         Player player1 = new Player("Player 1");
-        Player player2 = new Player("Player 2");
+        //Player player2 = new Player("Player 2");
+        Player player2 = (modeInfo == 2) ? new Player("Player 2") : null;
 
         // GameManager 및 NetworkService 생성
         GameManager gameManager = new GameManager(difficulty, totalRounds, player1, player2);
         NetworkService networkService = new NetworkServiceImpl();
 
+        initializeCardIds();
+        setupBoard();
+        gameManager.initializeBoard(boardCards);
+
         // GameController 생성
         gameController = new GameController(this, gameManager, networkService);
+
+        displayCards();
 
         // 카드 클릭 이벤트 처리
         // 카드 어댑터를 설정하고 클릭 리스너에서 gameController.onCardSelected(position) 호출
