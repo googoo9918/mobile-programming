@@ -1,6 +1,10 @@
 package kr.co.example.mobileprogramming.controller;
 
+import android.os.Handler;
 import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import kr.co.example.mobileprogramming.events.GameErrorListener;
 import kr.co.example.mobileprogramming.events.GameEventListener;
@@ -20,26 +24,37 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
     private GameActivity gameActivity;
     private GameManager gameManager;
     private NetworkService networkService;
+    private List<Integer> selectedCards;
+    private Handler timerHandler;
+    private Runnable turnTimeoutRunnable;
 
     public GameController(GameActivity gameActivity, GameManager gameManager, NetworkService networkService) {
         this.gameActivity = gameActivity;
         this.gameManager = gameManager;
         this.networkService = networkService;
 
+        this.selectedCards = new ArrayList<>();
+        this.timerHandler = new Handler();
+
         this.gameManager.setGameEventListener(this);
         this.gameManager.setGameErrorListener(this);
-        this.networkService.setDataReceivedListener(this);
 
+        this.networkService.setDataReceivedListener(this);
         this.networkService.connect();
     }
 
     // 사용자 입력 처리 메서드
     public void onCardSelected(int position) {
-        boolean success = gameManager.flipCard(position);
+        boolean success = gameManager.selectCard(position);
         if (success) {
-            Card card = gameManager.getBoard().getCardAt(position);
-            gameActivity.updateCard(position, card);
-            Log.d("GameAController","Card flipped at" + position);
+//            Card card = gameManager.getBoard().getCardAt(position);
+//            gameActivity.updateCard(position, card);
+            gameActivity.refreshUI();
+            if (gameManager.getSelectedCards().size() == 2) {
+                new Handler().postDelayed(() -> gameActivity.refreshUI(), 1000); // 매칭 결과 대기
+            } else {
+                gameActivity.refreshUI();
+            }
         }
         else {
             Log.d("GameAController","Card flipped failed at" + position);
@@ -107,12 +122,14 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
 
     @Override
     public void onCardFlipped(int position, Card card) {
-        gameActivity.updateCard(position, card);
+        //gameActivity.updateCard(position, card);
+        gameActivity.refreshUI();
     }
 
     @Override
     public void onMatchFound(int position1, int position2) {
         gameActivity.showMatch(position1, position2);
+        Log.d("Controller", "match found");
     }
 
     @Override

@@ -1,6 +1,7 @@
 package kr.co.example.mobileprogramming.model;
 
 import android.util.Log;
+import android.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ public class GameManager {
     private Player player1;
     private Player player2;  // null in single-player mode
     private Player currentPlayer;
+    private List<Pair<Integer, Card>> selectedCards; // 카드 위치와 객체를 저장
     private GameEventListener gameEventListener;
     private GameErrorListener gameErrorListener;
 
@@ -26,6 +28,7 @@ public class GameManager {
         this.player2 = player2;
         this.currentPlayer = player1;
         this.currentRound = 1;
+        this.selectedCards = new ArrayList<>();
     }
 
     public void startGame() {
@@ -73,11 +76,75 @@ public class GameManager {
         return success;
     }
 
-    public void switchTurn() {
+    public boolean selectCard(int position) {
+        Card selectedCard = board.getCardAt(position);
+
+        // 유효성 검사: 이미 선택된 카드인지 또는 두 장이 이미 선택된 상태인지 확인
+        if (selectedCard == null || selectedCard.isFlipped() || selectedCards.size() >= 2) {
+            return false; // 유효하지 않은 선택
+        }
+
+        selectedCards.add(new Pair<>(position, selectedCard)); // 위치와 카드 객체 저장
+        selectedCard.flip(); // 카드 뒤집기
+        gameEventListener.onCardFlipped(position, selectedCard);
+
+        if (selectedCards.size() == 2) {
+            processTurn(); // 두 장이 선택되면 턴 처리
+        }
+
+        return true; // 선택 성공
+    }
+
+    private void processTurn() {
+        if (selectedCards.size() != 2) return; // 두 장이 선택되지 않으면 처리하지 않음
+        Log.d("ProcessTurn", "cards selected" + selectedCards);
+
+        Card card1 = selectedCards.get(0).second;
+        Card card2 = selectedCards.get(1).second;
+
+        if(card1.getId() == card2.getId()) {
+            card1.setMatched();
+            card2.setMatched();
+            currentPlayer.addScore(1);
+
+            if (gameEventListener != null) {
+                gameEventListener.onMatchFound(selectedCards.get(0).first, selectedCards.get(1).first);
+            }
+            selectedCards.clear();
+        }
+        else {
+            // 매칭 실패: 딜레이 후 카드를 닫음
+            new android.os.Handler().postDelayed(() -> {
+                if (selectedCards.isEmpty()) {
+                    Log.e("ProcessTurn", "selectedCards is empty during delay");
+                    return;
+                }
+
+                card1.flip(); // 첫 번째 카드 닫기
+                card2.flip(); // 두 번째 카드 닫기
+
+                // UI 갱신
+                if (gameEventListener != null) {
+                    gameEventListener.onCardFlipped(selectedCards.get(0).first, card1);
+                    gameEventListener.onCardFlipped(selectedCards.get(1).first, card2);
+                }
+
+                // 턴 넘기기
+                switchTurn();
+                selectedCards.clear();
+            }, 500); // 0.5초 후 카드 닫기
+        }
+    }
+
+    private void switchTurn() {
+        Log.d("SwitchTurn", "Turn switched");
         if (player2 == null) {
-            currentPlayer = player1;
+            currentPlayer = player1; // Single-player mode
         } else {
             currentPlayer = (currentPlayer == player1) ? player2 : player1;
+            if (gameEventListener != null) {
+                gameEventListener.onTurnChanged(currentPlayer);
+            }
         }
     }
 
@@ -112,5 +179,9 @@ public class GameManager {
 
     public Board getBoard() {
         return board;
+    }
+
+    public List<Pair<Integer, Card>> getSelectedCards() {
+        return new ArrayList<>(selectedCards); // 선택된 카드 리스트 복사본 반환
     }
 }
