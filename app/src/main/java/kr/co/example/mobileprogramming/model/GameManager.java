@@ -1,5 +1,7 @@
 package kr.co.example.mobileprogramming.model;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,16 +26,16 @@ public class GameManager {
         this.player2 = player2;
         this.currentPlayer = player1;
         this.currentRound = 1;
-
     }
 
-    public void initializeBoard(Integer[] boardCards) {
+    public void initializeBoard(List<Card> boardCards) {
         // 난이도에 따라 보드 크기 및 카드 생성
-        List<Card> cards = new ArrayList<>();
-        for (Integer cardId : boardCards) {
-            cards.add(new Card(cardId, CardType.NORMAL));
+        this.board = new Board(boardCards);
+
+        for (int i = 0; i < boardCards.size(); i++) {
+            Card card = boardCards.get(i);
+            Log.d("initializeBoard", "Card at index " + i + ": ID=" + card.getId() + ", Type=" + card.getType());
         }
-        this.board = new Board(cards);
     }
 
     public boolean flipCard(int position) {

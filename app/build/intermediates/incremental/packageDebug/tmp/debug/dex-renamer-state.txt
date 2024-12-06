@@ -1,4 +1,4 @@
-#Sat Dec 07 20:23:21 KST 2024
+#Sat Dec 07 21:13:13 KST 2024
 base.0=C\:\\Users\\210328\\git\\mobile-programming\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
 base.1=C\:\\Users\\210328\\git\\mobile-programming\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
 base.2=C\:\\Users\\210328\\git\\mobile-programming\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\11\\classes.dex

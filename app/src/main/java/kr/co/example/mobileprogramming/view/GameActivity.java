@@ -1,5 +1,6 @@
 package kr.co.example.mobileprogramming.view;
 
+import kr.co.example.mobileprogramming.model.CardType;
 import kr.co.example.mobleprogramming.R;
 
 import android.content.Intent;
@@ -49,7 +50,7 @@ public class GameActivity extends AppCompatActivity {
     private static final int PAIRS_COUNT = 16; // 필요한 페어 수
 
     private List<Integer> cardIds; // 드로어블 리소스 ID 목록
-    private Integer[] boardCards; // 보드에 배치될 카드 배열
+    private List<Card> boardCards; // 보드에 배치될 카드 배열
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,8 +115,9 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void setupBoard() {
-        boardCards = new Integer[BOARD_SIZE];
-        Arrays.fill(boardCards, null);
+        boardCards = new ArrayList<>();
+//        boardCards = new Integer[BOARD_SIZE];
+//        Arrays.fill(boardCards, null);
 
         // 카드 중 18개(36/2)를 랜덤하게 선택하도록 수정
         Collections.shuffle(cardIds);
@@ -128,13 +130,18 @@ public class GameActivity extends AppCompatActivity {
         }
         Collections.shuffle(positions);
 
-        int positionIndex = 0;
+//        int positionIndex = 0;
         for (Integer cardId : selectedCards) {
             // 각 카드를 두 번 배치
-            boardCards[positions.get(positionIndex)] = cardId;
-            boardCards[positions.get(positionIndex + 1)] = cardId;
-            positionIndex += 2;
+            boardCards.add(new Card(cardId, CardType.NORMAL)); // 첫 번째 카드
+            boardCards.add(new Card(cardId, CardType.NORMAL)); // 두 번째 카드
+
+//            boardCards[positions.get(positionIndex)].id = cardId;
+//            boardCards[positions.get(positionIndex + 1)].id = cardId;
+//            positionIndex += 2;
         }
+        Collections.shuffle(boardCards);
+
     }
 
     private void displayCards() {
@@ -169,7 +176,15 @@ public class GameActivity extends AppCompatActivity {
                 cardImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
                 cardImage.setImageResource(R.drawable.back);
-                cardImage.setTag(boardCards[index]);
+//                cardImage.setTag(boardCards[index]);
+
+                Card currentCard = boardCards.get(index);
+
+                if (currentCard.isFlipped()) {
+                    cardImage.setImageResource(currentCard.getId()); // 앞면 이미지
+                } else {
+                    cardImage.setImageResource(R.drawable.back); // 뒷면 이미지
+                }
 
                 final int cardIndex = index;
 //                cardImage.setOnClickListener(v -> onCardClick(cardImage, cardIndex));
@@ -186,7 +201,9 @@ public class GameActivity extends AppCompatActivity {
 
     private void onCardClick(ImageView cardImage, int position) {
         // 카드 클릭 시 카드를 앞면으로 뒤집기
-        Integer cardId = boardCards[position];
+        Card currentCard = boardCards.get(position);
+        Integer cardId = currentCard.getId();
+
         if (cardId != null) {
             cardImage.setImageResource(cardId);
         }
