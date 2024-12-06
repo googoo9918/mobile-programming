@@ -262,15 +262,10 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void refreshUI() {
-        Log.d("GameActivity", "Refreshing UI...");
-
         GridLayout gridLayout = findViewById(R.id.cardGrid);
-
-        Log.d("GameActivity", "Before displayCards - GridLayout child count: " + gridLayout.getChildCount());
 
         // Check if GridLayout is initialized
         if (gridLayout == null) {
-            Log.e("GameActivity", "GridLayout is not initialized.");
             return;
         }
 
@@ -281,13 +276,11 @@ public class GameActivity extends AppCompatActivity {
             FrameLayout cardFrame = (FrameLayout) gridLayout.getChildAt(i);
 
             if (cardFrame == null) {
-                Log.e("GameActivity", "Card frame at index " + i + " is null.");
                 continue;
             }
 
             ImageView cardImage = (ImageView) cardFrame.getChildAt(0);
             if (cardImage == null) {
-                Log.e("GameActivity", "Card image at index " + i + " is null.");
                 continue;
             }
 
@@ -297,14 +290,12 @@ public class GameActivity extends AppCompatActivity {
                 if (tag == null || !tag.equals("flipped")) {
                     cardImage.setImageResource(card.getId());
                     cardImage.setTag("flipped");
-                    Log.d("GameActivity", "Card at index " + i + " is now flipped.");
                 }
             } else {
                 // Only update if the card is not already back
                 if (tag == null || !tag.equals("back")) {
                     cardImage.setImageResource(R.drawable.back);
                     cardImage.setTag("back");
-                    Log.d("GameActivity", "Card at index " + i + " is now back.");
                 }
             }
         }

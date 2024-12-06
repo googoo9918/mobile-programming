@@ -17,7 +17,7 @@ public class Board {
 
     public boolean flipCard(int position) {
         if (position < 0 || position >= cards.size()) {
-            Log.d("Board", "flipcard index error");
+            Log.e("Board", "flipcard index error");
             return false;
         }
         Card card = cards.get(position);

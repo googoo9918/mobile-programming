@@ -57,7 +57,7 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
             }
         }
         else {
-            Log.d("GameAController","Card flipped failed at" + position);
+            Log.e("GameAController","Card flipped failed at" + position);
             onInvalidMove("선택한 카드를 뒤집을 수 없습니다.");
         }
     }
@@ -88,7 +88,6 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
     }
 
     public void revealAllCardsTemporarily() {
-        Log.d("Controller", "reveal card called");
         for (int i = 0; i < gameManager.getBoard().getCards().size(); i++) {
             Card card = gameManager.getBoard().getCardAt(i);
             if (!card.isFlipped() && card.getType() == CardType.NORMAL) {
