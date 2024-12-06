@@ -9,9 +9,9 @@ public class Board {
     private int rows;
     private int columns;
 
-    public Board(List<Card> cards) {
-        this.rows = 6;
-        this.columns = 6;
+    public Board(int rows, int columns, List<Card> cards) {
+        this.rows = this.rows;
+        this.columns = this.columns;
         this.cards = cards;
     }
 

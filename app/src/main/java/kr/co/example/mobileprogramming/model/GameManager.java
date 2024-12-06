@@ -30,12 +30,26 @@ public class GameManager {
 
     public void initializeBoard(List<Card> boardCards) {
         // 난이도에 따라 보드 크기 및 카드 생성
-        this.board = new Board(boardCards);
+        int rows;
+        int columns;
 
-        for (int i = 0; i < boardCards.size(); i++) {
-            Card card = boardCards.get(i);
-            Log.d("initializeBoard", "Card at index " + i + ": ID=" + card.getId() + ", Type=" + card.getType());
+        switch (difficulty) {
+            case EASY:
+                rows = 5;
+                columns = 5;
+                break;
+            case HARD:
+                rows = 7;
+                columns = 7;
+                break;
+            case NORMAL:
+            default:
+                rows = 6;
+                columns = 6;
+                break;
         }
+
+        this.board = new Board(rows, columns, boardCards);
     }
 
     public boolean flipCard(int position) {
