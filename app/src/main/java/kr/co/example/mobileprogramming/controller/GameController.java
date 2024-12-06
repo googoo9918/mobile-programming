@@ -62,10 +62,44 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         }
     }
 
+    private int getRevealTime() {
+        switch (gameManager.getDifficulty()) {
+            case EASY: return 2000;  // 1초
+            case NORMAL: return 1000; // 0.5초
+            case HARD: return 500;   // 0.3초
+            default: return 500;
+        }
+    }
+
+    public void revealAllCardsTemporarily() {
+        Log.d("Controller", "reveal card called");
+        for (int i = 0; i < gameManager.getBoard().getCards().size(); i++) {
+            Card card = gameManager.getBoard().getCardAt(i);
+            if (!card.isFlipped()) {
+                card.flip();
+            }
+        }
+        gameActivity.displayCards();
+
+        int revealTime = getRevealTime(); // 난이도별 공개 시간
+        new android.os.Handler().postDelayed(() -> {
+            for (int i = 0; i < gameManager.getBoard().getCards().size(); i++) {
+                Card card = gameManager.getBoard().getCardAt(i);
+                if (card.isFlipped()) {
+                    card.flip();
+                }
+            }
+            gameActivity.displayCards();
+        }, revealTime);
+    }
+
+
     // GameEventListener 구현 메서드
     @Override
     public void onGameStarted() {
         gameActivity.initializeGameBoard(gameManager.getBoard());
+        revealAllCardsTemporarily();
+        Log.d("Controller", "game started");
     }
 
     @Override

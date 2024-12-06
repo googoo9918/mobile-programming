@@ -31,6 +31,8 @@ public class Board {
         return cards.get(position);
     }
 
-    // 기타 필요한 메서드
+    public List<Card> getCards() {
+        return cards;
+    }
 }
 

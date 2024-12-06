@@ -14,7 +14,7 @@ public class GameManager {
     private Difficulty difficulty;
     private Board board;
     private Player player1;
-    private Player player2;
+    private Player player2;  // null in single-player mode
     private Player currentPlayer;
     private GameEventListener gameEventListener;
     private GameErrorListener gameErrorListener;
@@ -28,11 +28,16 @@ public class GameManager {
         this.currentRound = 1;
     }
 
+    public void startGame() {
+        if (gameEventListener != null) {
+            gameEventListener.onGameStarted();
+        }
+    }
+
     public void initializeBoard(List<Card> boardCards) {
         // 난이도에 따라 보드 크기 및 카드 생성
         int rows;
         int columns;
-
         switch (difficulty) {
             case EASY:
                 rows = 5;
@@ -68,6 +73,14 @@ public class GameManager {
         return success;
     }
 
+    public void switchTurn() {
+        if (player2 == null) {
+            currentPlayer = player1;
+        } else {
+            currentPlayer = (currentPlayer == player1) ? player2 : player1;
+        }
+    }
+
     public void setGameEventListener(GameEventListener listener) {
         this.gameEventListener = listener;
     }
@@ -78,6 +91,10 @@ public class GameManager {
 
     public Player getCurrentPlayer() {
         return currentPlayer;
+    }
+
+    public Difficulty getDifficulty() {
+        return difficulty;
     }
 
     public GameResult getGameResult() {
