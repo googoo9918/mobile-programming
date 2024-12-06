@@ -176,9 +176,9 @@ public class GameActivity extends AppCompatActivity {
                 cardImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
                 cardImage.setImageResource(R.drawable.back);
-//                cardImage.setTag(boardCards[index]);
 
                 Card currentCard = boardCards.get(index);
+                cardImage.setTag(currentCard);
 
                 if (currentCard.isFlipped()) {
                     cardImage.setImageResource(currentCard.getId()); // 앞면 이미지
@@ -262,52 +262,53 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void refreshUI() {
-        Log.d("GameActivity", "refresh UI");
-
-        Log.d("refreshUI", "Refreshing UI..." + boardCards.size());
-
-        for (int i = 0; i < boardCards.size(); i++) {
-            Log.d("CardState", "Card " + i + " flipped: " + boardCards.get(i).isFlipped());
-        }
+        Log.d("GameActivity", "Refreshing UI...");
 
         GridLayout gridLayout = findViewById(R.id.cardGrid);
-        gridLayout.removeAllViews();
 
-        int index = 0;
+        Log.d("GameActivity", "Before displayCards - GridLayout child count: " + gridLayout.getChildCount());
 
-        for (Card card : boardCards) {
-            FrameLayout cardFrame = new FrameLayout(this);
-            GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-            params.width = gridLayout.getWidth() / 6; // 카드 크기 계산
-            params.height = gridLayout.getHeight() / 6; // 카드 크기 계산
-            params.rowSpec = GridLayout.spec(index / 6);
-            params.columnSpec = GridLayout.spec(index % 6);
-            params.setMargins(4, 4, 4, 4);
-
-            ImageView cardImage = new ImageView(this);
-            cardImage.setLayoutParams(new FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.MATCH_PARENT,
-                    FrameLayout.LayoutParams.MATCH_PARENT
-            ));
-            cardImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
-
-            if (card.isFlipped()) {
-                cardImage.setImageResource(card.getId()); // 카드 앞면 이미지
-            } else {
-                cardImage.setImageResource(R.drawable.back); // 카드 뒷면 이미지
-            }
-
-            final int cardIndex = index;
-            cardImage.setOnClickListener(v -> gameController.onCardSelected(cardIndex));
-
-            cardFrame.addView(cardImage);
-            cardFrame.setLayoutParams(params);
-            gridLayout.addView(cardFrame);
-
-            index++;
+        // Check if GridLayout is initialized
+        if (gridLayout == null) {
+            Log.e("GameActivity", "GridLayout is not initialized.");
+            return;
         }
 
-        gridLayout.invalidate(); // 강제로 다시 그리기
-        gridLayout.requestLayout(); // 레이아웃 강제 재계산
+        int totalCards = boardCards.size();
+
+        for (int i = 0; i < totalCards; i++) {
+            Card card = boardCards.get(i);
+            FrameLayout cardFrame = (FrameLayout) gridLayout.getChildAt(i);
+
+            if (cardFrame == null) {
+                Log.e("GameActivity", "Card frame at index " + i + " is null.");
+                continue;
+            }
+
+            ImageView cardImage = (ImageView) cardFrame.getChildAt(0);
+            if (cardImage == null) {
+                Log.e("GameActivity", "Card image at index " + i + " is null.");
+                continue;
+            }
+
+            Object tag = cardImage.getTag();
+            if (card.isFlipped()) {
+                // Only update if the card is not already flipped
+                if (tag == null || !tag.equals("flipped")) {
+                    cardImage.setImageResource(card.getId());
+                    cardImage.setTag("flipped");
+                    Log.d("GameActivity", "Card at index " + i + " is now flipped.");
+                }
+            } else {
+                // Only update if the card is not already back
+                if (tag == null || !tag.equals("back")) {
+                    cardImage.setImageResource(R.drawable.back);
+                    cardImage.setTag("back");
+                    Log.d("GameActivity", "Card at index " + i + " is now back.");
+                }
+            }
+        }
     }
+
+
 }

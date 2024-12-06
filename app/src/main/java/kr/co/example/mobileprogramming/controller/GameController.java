@@ -6,6 +6,7 @@ import kr.co.example.mobileprogramming.events.GameErrorListener;
 import kr.co.example.mobileprogramming.events.GameEventListener;
 import kr.co.example.mobileprogramming.events.OnItemSelectedListener;
 import kr.co.example.mobileprogramming.model.Card;
+import kr.co.example.mobileprogramming.model.CardType;
 import kr.co.example.mobileprogramming.model.GameManager;
 import kr.co.example.mobileprogramming.model.GameState;
 import kr.co.example.mobileprogramming.model.ItemCard;
@@ -75,11 +76,12 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         Log.d("Controller", "reveal card called");
         for (int i = 0; i < gameManager.getBoard().getCards().size(); i++) {
             Card card = gameManager.getBoard().getCardAt(i);
-            if (!card.isFlipped()) {
+            if (!card.isFlipped() && card.getType() == CardType.NORMAL) {
                 card.flip();
             }
         }
-        gameActivity.displayCards();
+
+        gameActivity.refreshUI();
 
         int revealTime = getRevealTime(); // 난이도별 공개 시간
         new android.os.Handler().postDelayed(() -> {
@@ -89,7 +91,7 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
                     card.flip();
                 }
             }
-            gameActivity.displayCards();
+            gameActivity.refreshUI();
         }, revealTime);
     }
 
@@ -98,6 +100,7 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
     @Override
     public void onGameStarted() {
         gameActivity.initializeGameBoard(gameManager.getBoard());
+        gameActivity.displayCards();
         revealAllCardsTemporarily();
         Log.d("Controller", "game started");
     }
