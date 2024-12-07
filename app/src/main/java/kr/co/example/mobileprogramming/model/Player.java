@@ -21,19 +21,29 @@ public class Player {
         this.score += points;
     }
 
+    public void doubleScore() {
+        this.score *= 2;
+    }
+
     public void addItemEffect(ItemEffect itemEffect) {
         items.add(itemEffect);
     }
+
 
     public boolean useItem(ItemType itemType, GameManager gameManager) {
         for (ItemEffect item : items) {
             if (item.getItemType() == itemType) {
                 item.applyEffect(gameManager, this);
                 items.remove(item);
+                // TODO: item logic
                 return true;
             }
         }
         return false;
+    }
+
+    public void clearItems() {
+        items.clear(); // 모든 아이템 제거
     }
 
     // Getter&Setter

@@ -1,5 +1,6 @@
 package kr.co.example.mobileprogramming.model;
 
+import android.content.ClipData;
 import android.util.Log;
 import android.util.Pair;
 
@@ -8,6 +9,7 @@ import java.util.List;
 
 import kr.co.example.mobileprogramming.events.GameErrorListener;
 import kr.co.example.mobileprogramming.events.GameEventListener;
+import kr.co.example.mobileprogramming.model.itemeffects.ItemEffect;
 
 public class GameManager {
     private int currentRound;
@@ -18,6 +20,7 @@ public class GameManager {
     private Player player2;  // null in single-player mode
     private Player currentPlayer;
     private List<Pair<Integer, Card>> selectedCards; // 카드 위치와 객체를 저장
+    private boolean extendTurnFlag = false;
     private GameEventListener gameEventListener;
     private GameErrorListener gameErrorListener;
 
@@ -105,6 +108,17 @@ public class GameManager {
         if(card1.getId() == card2.getId()) {
             card1.setMatched();
             card2.setMatched();
+
+            if(card1.getType() == CardType.ITEM) {
+                ItemCard itemCard = (ItemCard) card1;
+                ItemEffect itemEffect = itemCard.createItemEffect(); // Get the corresponding effect
+                currentPlayer.addItemEffect(itemEffect);
+
+                if (gameEventListener != null) {
+                    gameEventListener.onItemAcquired(itemCard);
+                }
+            }
+
             currentPlayer.addScore(1);
 
             if (gameEventListener != null) {
@@ -137,7 +151,11 @@ public class GameManager {
     }
 
     private void switchTurn() {
-        Log.d("SwitchTurn", "Turn switched");
+        if(extendTurnFlag) {
+            extendTurnFlag = false;
+            return;
+        }
+
         if (player2 == null) {
             currentPlayer = player1; // Single-player mode
         } else {
@@ -146,6 +164,19 @@ public class GameManager {
                 gameEventListener.onTurnChanged(currentPlayer);
             }
         }
+        Log.d("Game", "Turn switched to " + currentPlayer.getName());
+        Log.d("Game", "player 1 " + player1.getScore());
+        Log.d("Game", "player 2 " + player2.getScore());
+    }
+
+    public void notifyCardFlipped(int position, Card card) {
+        if (gameEventListener != null) {
+            gameEventListener.onCardFlipped(position, card);
+        }
+    }
+
+    public void setExtendTurnFlag(boolean extendTurnFlag) {
+        this.extendTurnFlag = extendTurnFlag;
     }
 
     public void setGameEventListener(GameEventListener listener) {
@@ -183,5 +214,12 @@ public class GameManager {
 
     public List<Pair<Integer, Card>> getSelectedCards() {
         return new ArrayList<>(selectedCards); // 선택된 카드 리스트 복사본 반환
+    }
+
+    public Player getOpponent(Player currentPlayer) {
+        if (player2 == null) {
+            return null;
+        }
+        return (currentPlayer == player1) ? player2 : player1;
     }
 }
