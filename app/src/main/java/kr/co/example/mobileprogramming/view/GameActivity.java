@@ -1,5 +1,6 @@
 package kr.co.example.mobileprogramming.view;
 
+import kr.co.example.mobileprogramming.model.CardType;
 import kr.co.example.mobleprogramming.R;
 
 import android.content.Intent;
@@ -49,7 +50,7 @@ public class GameActivity extends AppCompatActivity {
     private static final int PAIRS_COUNT = 16; // 필요한 페어 수
 
     private List<Integer> cardIds; // 드로어블 리소스 ID 목록
-    private Integer[] boardCards; // 보드에 배치될 카드 배열
+    private List<Card> boardCards; // 보드에 배치될 카드 배열
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +70,6 @@ public class GameActivity extends AppCompatActivity {
         difficultyText.setText("난이도: " + difficultyInfo);
         modeText.setText("게임 모드: " + String.valueOf(modeInfo)+"인용");
 
-
-        initializeCardIds();
-        setupBoard();
-        displayCards();
-
         // UI 요소 초기화
 //        gameBoard = findViewById(R.id.game_board);
 //        scoreTextView = findViewById(R.id.score_text_view);
@@ -81,16 +77,23 @@ public class GameActivity extends AppCompatActivity {
 
         // 게임 설정 정보 가져오기 (예: Intent로부터)
         Difficulty difficulty = Difficulty.NORMAL;
-        int totalRounds = 5;
+//        int totalRounds = 5;
         Player player1 = new Player("Player 1");
-        Player player2 = new Player("Player 2");
+        //Player player2 = new Player("Player 2");
+        Player player2 = (modeInfo == 2) ? new Player("Player 2") : null;
 
         // GameManager 및 NetworkService 생성
-        GameManager gameManager = new GameManager(difficulty, totalRounds, player1, player2);
+        GameManager gameManager = new GameManager(Difficulty.NORMAL, roundInfo, player1, player2); // fix difficulty NORMAL
         NetworkService networkService = new NetworkServiceImpl();
+
+        initializeCardIds();
+        setupBoard();
+        gameManager.initializeBoard(boardCards);
 
         // GameController 생성
         gameController = new GameController(this, gameManager, networkService);
+
+        gameManager.startGame();
 
         // 카드 클릭 이벤트 처리
         // 카드 어댑터를 설정하고 클릭 리스너에서 gameController.onCardSelected(position) 호출
@@ -112,8 +115,9 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void setupBoard() {
-        boardCards = new Integer[BOARD_SIZE];
-        Arrays.fill(boardCards, null);
+        boardCards = new ArrayList<>();
+//        boardCards = new Integer[BOARD_SIZE];
+//        Arrays.fill(boardCards, null);
 
         // 카드 중 18개(36/2)를 랜덤하게 선택하도록 수정
         Collections.shuffle(cardIds);
@@ -126,17 +130,24 @@ public class GameActivity extends AppCompatActivity {
         }
         Collections.shuffle(positions);
 
-        int positionIndex = 0;
+//        int positionIndex = 0;
         for (Integer cardId : selectedCards) {
             // 각 카드를 두 번 배치
-            boardCards[positions.get(positionIndex)] = cardId;
-            boardCards[positions.get(positionIndex + 1)] = cardId;
-            positionIndex += 2;
+            boardCards.add(new Card(cardId, CardType.NORMAL)); // 첫 번째 카드
+            boardCards.add(new Card(cardId, CardType.NORMAL)); // 두 번째 카드
+
+//            boardCards[positions.get(positionIndex)].id = cardId;
+//            boardCards[positions.get(positionIndex + 1)].id = cardId;
+//            positionIndex += 2;
         }
+        Collections.shuffle(boardCards);
+
     }
 
-    private void displayCards() {
+    public void displayCards() {
         GridLayout gridLayout = findViewById(R.id.cardGrid);
+        gridLayout.removeAllViews();
+
         gridLayout.setRowCount(6);
         gridLayout.setColumnCount(6);
         int index = 0;
@@ -165,10 +176,19 @@ public class GameActivity extends AppCompatActivity {
                 cardImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
                 cardImage.setImageResource(R.drawable.back);
-                cardImage.setTag(boardCards[index]);
+
+                Card currentCard = boardCards.get(index);
+                cardImage.setTag(currentCard);
+
+                if (currentCard.isFlipped()) {
+                    cardImage.setImageResource(currentCard.getId()); // 앞면 이미지
+                } else {
+                    cardImage.setImageResource(R.drawable.back); // 뒷면 이미지
+                }
 
                 final int cardIndex = index;
-                cardImage.setOnClickListener(v -> onCardClick(cardImage, cardIndex));
+//                cardImage.setOnClickListener(v -> onCardClick(cardImage, cardIndex));
+                cardImage.setOnClickListener(v -> gameController.onCardSelected(cardIndex));
 
                 cardFrame.addView(cardImage);
                 cardFrame.setLayoutParams(params);
@@ -181,7 +201,9 @@ public class GameActivity extends AppCompatActivity {
 
     private void onCardClick(ImageView cardImage, int position) {
         // 카드 클릭 시 카드를 앞면으로 뒤집기
-        Integer cardId = boardCards[position];
+        Card currentCard = boardCards.get(position);
+        Integer cardId = currentCard.getId();
+
         if (cardId != null) {
             cardImage.setImageResource(cardId);
         }
@@ -195,6 +217,15 @@ public class GameActivity extends AppCompatActivity {
 
     public void updateCard(int position, Card card) {
         // 카드 상태 업데이트
+        GridLayout gridLayout = findViewById(R.id.cardGrid);
+        FrameLayout cardFrame = (FrameLayout) gridLayout.getChildAt(position);
+        ImageView cardImage = (ImageView) cardFrame.getChildAt(0);
+
+        if (card.isFlipped()) {
+            cardImage.setImageResource(card.getId());
+        } else {
+            cardImage.setImageResource(R.drawable.back);
+        }
     }
 
     public void showItemDialog(List<ItemEffect> items) {
@@ -231,8 +262,44 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void refreshUI() {
-        // 현재 게임 상태를 기반으로 UI를 업데이트
-        // 예: 게임 보드 갱신, 플레이어 점수 업데이트, 현재 플레이어 표시 등
+        GridLayout gridLayout = findViewById(R.id.cardGrid);
+
+        // Check if GridLayout is initialized
+        if (gridLayout == null) {
+            return;
+        }
+
+        int totalCards = boardCards.size();
+
+        for (int i = 0; i < totalCards; i++) {
+            Card card = boardCards.get(i);
+            FrameLayout cardFrame = (FrameLayout) gridLayout.getChildAt(i);
+
+            if (cardFrame == null) {
+                continue;
+            }
+
+            ImageView cardImage = (ImageView) cardFrame.getChildAt(0);
+            if (cardImage == null) {
+                continue;
+            }
+
+            Object tag = cardImage.getTag();
+            if (card.isFlipped()) {
+                // Only update if the card is not already flipped
+                if (tag == null || !tag.equals("flipped")) {
+                    cardImage.setImageResource(card.getId());
+                    cardImage.setTag("flipped");
+                }
+            } else {
+                // Only update if the card is not already back
+                if (tag == null || !tag.equals("back")) {
+                    cardImage.setImageResource(R.drawable.back);
+                    cardImage.setTag("back");
+                }
+            }
+        }
     }
+
 
 }

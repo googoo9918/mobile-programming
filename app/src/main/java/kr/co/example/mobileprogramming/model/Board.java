@@ -1,5 +1,7 @@
 package kr.co.example.mobileprogramming.model;
 
+import android.util.Log;
+
 import java.util.List;
 
 public class Board {
@@ -8,13 +10,16 @@ public class Board {
     private int columns;
 
     public Board(int rows, int columns, List<Card> cards) {
-        this.rows = rows;
-        this.columns = columns;
+        this.rows = this.rows;
+        this.columns = this.columns;
         this.cards = cards;
     }
 
     public boolean flipCard(int position) {
-        if (position < 0 || position >= cards.size()) return false;
+        if (position < 0 || position >= cards.size()) {
+            Log.e("Board", "flipcard index error");
+            return false;
+        }
         Card card = cards.get(position);
         if (card.isFlipped()) return false;
         card.flip();
@@ -26,6 +31,8 @@ public class Board {
         return cards.get(position);
     }
 
-    // 기타 필요한 메서드
+    public List<Card> getCards() {
+        return cards;
+    }
 }
 

@@ -1,5 +1,17 @@
 package kr.co.example.mobileprogramming.model.itemeffects;
 
-public class BombLoseAllItemsEffect {
-    //Todo: 아이템 카드 모두 잃는 로직 구현
+import kr.co.example.mobileprogramming.model.GameManager;
+import kr.co.example.mobileprogramming.model.ItemType;
+import kr.co.example.mobileprogramming.model.Player;
+
+public class BombLoseAllItemsEffect implements ItemEffect {
+    @Override
+    public void applyEffect(GameManager gameManager, Player player) {
+        player.clearItems();
+    }
+
+    @Override
+    public ItemType getItemType() {
+        return ItemType.BOMB_LOSE_ALL_ITEMS;
+    }
 }

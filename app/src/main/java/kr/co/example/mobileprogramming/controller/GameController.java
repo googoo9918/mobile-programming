@@ -1,9 +1,16 @@
 package kr.co.example.mobileprogramming.controller;
 
+import android.os.Handler;
+import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import kr.co.example.mobileprogramming.events.GameErrorListener;
 import kr.co.example.mobileprogramming.events.GameEventListener;
 import kr.co.example.mobileprogramming.events.OnItemSelectedListener;
 import kr.co.example.mobileprogramming.model.Card;
+import kr.co.example.mobileprogramming.model.CardType;
 import kr.co.example.mobileprogramming.model.GameManager;
 import kr.co.example.mobileprogramming.model.GameState;
 import kr.co.example.mobileprogramming.model.ItemCard;
@@ -17,23 +24,40 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
     private GameActivity gameActivity;
     private GameManager gameManager;
     private NetworkService networkService;
+    private List<Integer> selectedCards;
+    private Handler timerHandler;
+    private Runnable turnTimeoutRunnable;
 
     public GameController(GameActivity gameActivity, GameManager gameManager, NetworkService networkService) {
         this.gameActivity = gameActivity;
         this.gameManager = gameManager;
         this.networkService = networkService;
 
+        this.selectedCards = new ArrayList<>();
+        this.timerHandler = new Handler();
+
         this.gameManager.setGameEventListener(this);
         this.gameManager.setGameErrorListener(this);
-        this.networkService.setDataReceivedListener(this);
 
+        this.networkService.setDataReceivedListener(this);
         this.networkService.connect();
     }
 
     // 사용자 입력 처리 메서드
     public void onCardSelected(int position) {
-        boolean success = gameManager.flipCard(position);
-        if (!success) {
+        boolean success = gameManager.selectCard(position);
+        if (success) {
+//            Card card = gameManager.getBoard().getCardAt(position);
+//            gameActivity.updateCard(position, card);
+            gameActivity.refreshUI();
+            if (gameManager.getSelectedCards().size() == 2) {
+                new Handler().postDelayed(() -> gameActivity.refreshUI(), 1000); // 매칭 결과 대기
+            } else {
+                gameActivity.refreshUI();
+            }
+        }
+        else {
+            Log.e("GameAController","Card flipped failed at" + position);
             onInvalidMove("선택한 카드를 뒤집을 수 없습니다.");
         }
     }
@@ -54,20 +78,57 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         }
     }
 
+    private int getRevealTime() {
+        switch (gameManager.getDifficulty()) {
+            case EASY: return 2000;  // 1초
+            case NORMAL: return 1000; // 0.5초
+            case HARD: return 500;   // 0.3초
+            default: return 500;
+        }
+    }
+
+    public void revealAllCardsTemporarily() {
+        for (int i = 0; i < gameManager.getBoard().getCards().size(); i++) {
+            Card card = gameManager.getBoard().getCardAt(i);
+            if (!card.isFlipped() && card.getType() == CardType.NORMAL) {
+                card.flip();
+            }
+        }
+
+        gameActivity.refreshUI();
+
+        int revealTime = getRevealTime(); // 난이도별 공개 시간
+        new android.os.Handler().postDelayed(() -> {
+            for (int i = 0; i < gameManager.getBoard().getCards().size(); i++) {
+                Card card = gameManager.getBoard().getCardAt(i);
+                if (card.isFlipped()) {
+                    card.flip();
+                }
+            }
+            gameActivity.refreshUI();
+        }, revealTime);
+    }
+
+
     // GameEventListener 구현 메서드
     @Override
     public void onGameStarted() {
         gameActivity.initializeGameBoard(gameManager.getBoard());
+        gameActivity.displayCards();
+        revealAllCardsTemporarily();
+        Log.d("Controller", "game started");
     }
 
     @Override
     public void onCardFlipped(int position, Card card) {
-        gameActivity.updateCard(position, card);
+        //gameActivity.updateCard(position, card);
+        gameActivity.refreshUI();
     }
 
     @Override
     public void onMatchFound(int position1, int position2) {
         gameActivity.showMatch(position1, position2);
+        Log.d("Controller", "match found");
     }
 
     @Override

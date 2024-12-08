@@ -2,6 +2,7 @@ package kr.co.example.mobileprogramming.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;

@@ -1,5 +1,17 @@
 package kr.co.example.mobileprogramming.model.itemeffects;
 
-public class DoubleScoreEffect {
-    // Todo: 이번턴 점수 2배 로직 구현
+import kr.co.example.mobileprogramming.model.GameManager;
+import kr.co.example.mobileprogramming.model.ItemType;
+import kr.co.example.mobileprogramming.model.Player;
+
+public class DoubleScoreEffect implements ItemEffect{
+    @Override
+    public void applyEffect(GameManager gameManager, Player player) {
+        player.doubleScore();
+    }
+
+    @Override
+    public ItemType getItemType() {
+        return ItemType.DOUBLE_SCORE;
+    }
 }

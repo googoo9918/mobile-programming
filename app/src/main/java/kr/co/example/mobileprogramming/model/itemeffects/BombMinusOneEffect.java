@@ -1,5 +1,17 @@
 package kr.co.example.mobileprogramming.model.itemeffects;
 
-public class BombMinusOneEffect {
-    //Todo: 점수 1점 마이너스 되는 로직 구현
+import kr.co.example.mobileprogramming.model.GameManager;
+import kr.co.example.mobileprogramming.model.ItemType;
+import kr.co.example.mobileprogramming.model.Player;
+
+public class BombMinusOneEffect implements ItemEffect{
+    @Override
+    public void applyEffect(GameManager gameManager, Player player) {
+        player.addScore(-1);
+    }
+
+    @Override
+    public ItemType getItemType() {
+        return ItemType.BOMB_MINUS_ONE;
+    }
 }
