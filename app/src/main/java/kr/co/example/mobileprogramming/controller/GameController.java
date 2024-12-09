@@ -1,5 +1,6 @@
 package kr.co.example.mobileprogramming.controller;
 
+import android.content.Intent;
 import android.os.Handler;
 
 import kr.co.example.mobileprogramming.events.GameErrorListener;
@@ -8,6 +9,7 @@ import kr.co.example.mobileprogramming.events.OnItemSelectedListener;
 import kr.co.example.mobileprogramming.model.Card;
 import kr.co.example.mobileprogramming.model.CardType;
 import kr.co.example.mobileprogramming.model.GameManager;
+import kr.co.example.mobileprogramming.model.GameResult;
 import kr.co.example.mobileprogramming.model.GameState;
 import kr.co.example.mobileprogramming.model.ItemCard;
 import kr.co.example.mobileprogramming.model.ItemType;
@@ -24,9 +26,9 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
     private Handler gameTimerHandler = new Handler();
     private Runnable gameTimerRunnable;
 
-    private long timeRemaining;    // 싱글플레이 모드용 남은 시간
-    private long elapsedTime = 0;  // 멀티플레이 모드용 경과 시간
-
+    private long timeRemaining;
+    private long initialTime;
+    private long elapsedTime;
     private boolean isSinglePlayer;
 
     public GameController(GameActivity gameActivity, GameManager gameManager, NetworkService networkService) {
@@ -40,30 +42,27 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         this.networkService.setDataReceivedListener(this);
         this.networkService.connect();
 
-        // 모드 판별
-        Player player2 = gameManager.getOpponent(gameManager.getCurrentPlayer());
-        isSinglePlayer = (player2 == null);
+        isSinglePlayer = (gameManager.getPlayer2() == null);
 
         setupTimer();
     }
 
     private void setupTimer() {
         if (isSinglePlayer) {
-            // 난이도에 따른 남은 시간 설정
             switch (gameManager.getDifficulty()) {
                 case EASY:
-                    timeRemaining = 5 * 60 * 1000; // 5분
+                    initialTime = 5 * 60 * 1000; //5분
                     break;
                 case NORMAL:
-                    timeRemaining = 3 * 60 * 1000; // 3분
+                    initialTime = 3 * 60 * 1000; //3분
                     break;
                 case HARD:
-                    timeRemaining = 60 * 1000; // 1분
+                    initialTime = 60 * 1000; //1분
                     break;
                 default:
-                    timeRemaining = 3 * 60 * 1000;
+                    initialTime = 3 * 60 * 1000;
             }
-
+            timeRemaining = initialTime;
             gameTimerRunnable = new Runnable() {
                 @Override
                 public void run() {
@@ -102,18 +101,31 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         boolean success = gameManager.selectCard(position);
         if (success) {
             gameActivity.refreshUI();
-            // 카드 두 장 선택 후 매칭 결과 대기 (싱글/멀티 공통 로직)
+            updateScoreUI();
             if (gameManager.getSelectedCards().size() == 2) {
                 new Handler().postDelayed(() -> {
                     gameActivity.refreshUI();
+                    updateScoreUI();
                     checkGameOverCondition();
                 }, 1000);
             } else {
-                gameActivity.refreshUI();
                 checkGameOverCondition();
             }
         } else {
             onInvalidMove("선택한 카드를 뒤집을 수 없습니다.");
+        }
+    }
+
+    // 모드별 점수 UI 갱신
+    private void updateScoreUI() {
+        Player p1 = gameManager.getPlayer1();
+        Player p2 = gameManager.getPlayer2();
+        gameActivity.updateScoreUI(p1, p2);
+    }
+
+    private void checkGameOverCondition() {
+        if (gameManager.isAllCardsMatched()) {
+            onGameOver();
         }
     }
 
@@ -134,8 +146,8 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
 
     private int getRevealTime() {
         switch (gameManager.getDifficulty()) {
-            case EASY: return 10000; //10초`
-            case NORMAL: return 5000; //5초
+            case EASY: return 10000; //10초
+            case NORMAL: return 50000; //5초
             case HARD: return 3000; //3초
             default: return 1000;
         }
@@ -155,7 +167,6 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         new Handler().postDelayed(() -> {
             for (int i = 0; i < gameManager.getBoard().getCards().size(); i++) {
                 Card card = gameManager.getBoard().getCardAt(i);
-                // 매칭되지 않은 카드만 다시 뒤집기
                 if (card.isFlipped() && !card.isMatched()) {
                     card.flip();
                 }
@@ -164,14 +175,6 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         }, revealTime);
     }
 
-    private void checkGameOverCondition() {
-        // 모든 카드 매칭 여부 확인
-        if (gameManager.isAllCardsMatched()) {
-            onGameOver();
-        }
-    }
-
-    // GameEventListener 구현
     @Override
     public void onGameStarted() {
         gameActivity.initializeGameBoard(gameManager.getBoard());
@@ -203,7 +206,36 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
     @Override
     public void onGameOver() {
         stopGameTimer();
-        gameActivity.navigateToResultActivity(gameManager.getGameResult());
+        long timeSpent;
+        if (isSinglePlayer) {
+            timeSpent = initialTime - timeRemaining;
+        } else {
+            timeSpent = elapsedTime;
+        }
+        GameResult result = gameManager.getGameResult();
+        Player winner = result.getWinner();
+
+        Intent intent = new Intent(gameActivity, kr.co.example.mobileprogramming.view.ResultActivity.class);
+        intent.putExtra("MODE", isSinglePlayer ? 1 : 2);
+        intent.putExtra("DIFFICULTY", gameManager.getDifficulty().name());
+        intent.putExtra("TIME_SPENT", timeSpent);
+        intent.putExtra("TOTAL_ROUNDS", gameManager.getTotalRounds());
+        intent.putExtra("CURRENT_ROUND", gameManager.getCurrentRound());
+
+        if (isSinglePlayer) {
+            // 1인용: currentPlayer는 player1
+            Player p = gameManager.getPlayer1();
+            intent.putExtra("CORRECT", p.getCorrectCount());
+            intent.putExtra("WRONG", p.getWrongCount());
+        } else {
+            // 2인용: 승자 정보
+            intent.putExtra("WINNER_NAME", winner.getName());
+            intent.putExtra("WINNER_CORRECT", winner.getCorrectCount());
+            intent.putExtra("WINNER_WRONG", winner.getWrongCount());
+        }
+
+        gameActivity.startActivity(intent);
+        gameActivity.finish();
     }
 
     @Override
@@ -211,7 +243,6 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         gameActivity.refreshUI();
     }
 
-    // GameErrorListener 구현
     @Override
     public void onNetworkError(String message) {
         gameActivity.showErrorDialog("네트워크 오류", message);
@@ -227,7 +258,6 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         gameActivity.showToast(message);
     }
 
-    // DataReceivedListener 구현
     @Override
     public void onDataReceived(GameState gameState) {
         gameManager.updateGameState(gameState);
