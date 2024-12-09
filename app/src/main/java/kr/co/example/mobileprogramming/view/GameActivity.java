@@ -3,13 +3,18 @@ package kr.co.example.mobileprogramming.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -58,6 +63,10 @@ public class GameActivity extends AppCompatActivity {
     private String difficultyInfo;
     private int modeInfo;
 
+    private View pauseOverlay;
+    private ImageButton pauseButton;
+    private Button resumeButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +105,7 @@ public class GameActivity extends AppCompatActivity {
         gameManager.initializeBoard(boardCards);
 
         gameController = new GameController(this, gameManager, networkService);
+        initializePauseUI();
         gameManager.startGame();
     }
 
@@ -299,5 +309,79 @@ public class GameActivity extends AppCompatActivity {
             int minutes = (int) (elapsedMillis / 1000) / 60;
             elapsedTimeTextView.setText(String.format("%02d:%02d", minutes, seconds));
         }
+    }
+
+    private void initializePauseUI() {
+        try {
+            // Pause 버튼 설정
+            pauseButton = findViewById(R.id.pauseButton);
+            if (pauseButton != null) {
+                pauseButton.setOnClickListener(v -> {
+                    if (gameController != null) {
+                        gameController.pauseGame();
+                    }
+                });
+            }
+
+            // Pause 오버레이 설정
+            pauseOverlay = getLayoutInflater().inflate(R.layout.pause_overlay, null);
+            if (pauseOverlay != null) {
+                resumeButton = pauseOverlay.findViewById(R.id.resumeButton);
+                if (resumeButton != null) {
+                    resumeButton.setOnClickListener(v -> {
+                        if (gameController != null) {
+                            gameController.resumeGame();
+                        }
+                    });
+                }
+
+                // 오버레이를 루트 레이아웃에 추가
+                ViewGroup rootView = findViewById(R.id.root_layout);  // activity_game_singleplayer.xml의 최상위 레이아웃 ID
+                if (rootView != null) {
+                    FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                            FrameLayout.LayoutParams.MATCH_PARENT,
+                            FrameLayout.LayoutParams.MATCH_PARENT
+                    );
+                    pauseOverlay.setVisibility(View.GONE);
+                    rootView.addView(pauseOverlay, params);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "일시정지 UI 초기화 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void showPauseOverlay() {
+        pauseOverlay.setVisibility(View.VISIBLE);
+        pauseButton.setEnabled(false);
+    }
+
+    public void hidePauseOverlay() {
+        pauseOverlay.setVisibility(View.GONE);
+        pauseButton.setEnabled(true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // 게임이 진행 중일 때만 일시정지 실행
+        if (!gameController.isPaused() && !gameController.isUserPaused() && !isFinishing()) {
+            gameController.pauseGame();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // 홈 버튼으로 앱이 백그라운드로 갈 때도 일시정지 상태 유지
+        if (!gameController.isPaused() && !gameController.isUserPaused() && !isFinishing()) {
+            gameController.pauseGame();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 }

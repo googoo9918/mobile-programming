@@ -18,6 +18,8 @@ import kr.co.example.mobileprogramming.network.DataReceivedListener;
 import kr.co.example.mobileprogramming.network.NetworkService;
 import kr.co.example.mobileprogramming.view.GameActivity;
 
+import android.util.Pair;
+
 public class GameController implements GameEventListener, GameErrorListener, OnItemSelectedListener, DataReceivedListener {
     private GameActivity gameActivity;
     private GameManager gameManager;
@@ -31,10 +33,15 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
     private long elapsedTime;
     private boolean isSinglePlayer;
 
+    private boolean isPaused = false;
+    private boolean isUserPaused = false;
+
     public GameController(GameActivity gameActivity, GameManager gameManager, NetworkService networkService) {
         this.gameActivity = gameActivity;
         this.gameManager = gameManager;
         this.networkService = networkService;
+        this.isPaused = false;
+        this.isUserPaused = false;
 
         this.gameManager.setGameEventListener(this);
         this.gameManager.setGameErrorListener(this);
@@ -66,12 +73,14 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
             gameTimerRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    timeRemaining -= 1000;
-                    if (timeRemaining <= 0) {
-                        onGameOver();
-                    } else {
-                        gameActivity.updateTimeUI(timeRemaining);
-                        gameTimerHandler.postDelayed(this, 1000);
+                    if (!isPaused) {
+                        timeRemaining -= 1000;
+                        if (timeRemaining <= 0) {
+                            onGameOver();
+                        } else {
+                            gameActivity.updateTimeUI(timeRemaining);
+                            gameTimerHandler.postDelayed(this, 1000);
+                        }
                     }
                 }
             };
@@ -81,9 +90,11 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
             gameTimerRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    elapsedTime += 1000;
-                    gameActivity.updateElapsedTimeUI(elapsedTime);
-                    gameTimerHandler.postDelayed(this, 1000);
+                    if (!isPaused) {
+                        elapsedTime += 1000;
+                        gameActivity.updateElapsedTimeUI(elapsedTime);
+                        gameTimerHandler.postDelayed(this, 1000);
+                    }
                 }
             };
         }
@@ -98,6 +109,9 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
     }
 
     public void onCardSelected(int position) {
+        if (isPaused) {
+            return; // 일시 정지 중에는 카드 선택 불가
+        }
         boolean success = gameManager.selectCard(position);
         if (success) {
             gameActivity.refreshUI();
@@ -215,6 +229,11 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         GameResult result = gameManager.getGameResult();
         Player winner = result.getWinner();
 
+
+        isPaused = true;  // 타이머 중지를 위해 true 로 설정
+        isUserPaused = true;  // onPause 에서 자동 일시 정지 방지를 위해 true 로 설정
+
+
         Intent intent = new Intent(gameActivity, kr.co.example.mobileprogramming.view.ResultActivity.class);
         intent.putExtra("MODE", isSinglePlayer ? 1 : 2);
         intent.putExtra("DIFFICULTY", gameManager.getDifficulty().name());
@@ -272,6 +291,47 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
     public void onDestroy() {
         stopGameTimer();
         networkService.disconnect();
+    }
+
+    public void pauseGame() {
+        if (!isPaused) {
+            isPaused = true;
+            isUserPaused = true;  // 사용자가 일시정지 버튼을 눌렀을 때만 true
+            stopGameTimer();
+
+            for (Card card : gameManager.getBoard().getCards()) {
+                if (card.isFlipped() && !card.isMatched()) {
+                    card.flip();
+                }
+            }
+            gameActivity.refreshUI();
+            gameActivity.showPauseOverlay();
+        }
+    }
+
+    public void resumeGame() {
+        if (isPaused) {
+            isPaused = false;
+            isUserPaused = false;  // 게임 재개 시 플래그 초기화
+            startGameTimer();
+
+            for (Pair<Integer, Card> pair : gameManager.getSelectedCards()) {
+                Card card = pair.second;
+                if (!card.isMatched()) {
+                    card.flip();
+                }
+            }
+            gameActivity.refreshUI();
+            gameActivity.hidePauseOverlay();
+        }
+    }
+
+    public boolean isPaused() {
+        return isPaused;
+    }
+
+    public boolean isUserPaused() {
+        return isUserPaused;
     }
 }
 
