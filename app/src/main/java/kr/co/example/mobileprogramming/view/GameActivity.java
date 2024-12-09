@@ -30,22 +30,31 @@ import kr.co.example.mobileprogramming.network.NetworkService;
 import kr.co.example.mobileprogramming.network.NetworkServiceImpl;
 import kr.co.example.mobleprogramming.R;
 
-
-
 public class GameActivity extends AppCompatActivity {
     private GameController gameController;
 
     private TextView roundText;
     private TextView difficultyText;
     private TextView modeText;
-    private TextView timeTextView;       // 1인용 모드에서 사용
-    private TextView elapsedTimeTextView; // 2인용 모드에서 사용
+    private TextView timeTextView;       // 싱글플레이 시간 표시
+    private TextView elapsedTimeTextView; // 멀티플레이 시간 표시
 
-    private static final int BOARD_SIZE = 36; // 6x6 보드
+    // 싱글플레이 correct/wrong 표시
+    private TextView correctCountTextView;
+    private TextView wrongCountTextView;
+
+    // 멀티플레이 correct/wrong 표시
+    private TextView player1CorrectTextView;
+    private TextView player1WrongTextView;
+    private TextView player2CorrectTextView;
+    private TextView player2WrongTextView;
+
+    private static final int BOARD_SIZE = 36;
     private List<Integer> cardIds;
     private List<Card> boardCards;
 
     private int roundInfo;
+    private int totalRounds;
     private String difficultyInfo;
     private int modeInfo;
 
@@ -54,11 +63,11 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        roundInfo = intent.getIntExtra("ROUND", 3);
+        roundInfo = intent.getIntExtra("ROUND", 1);
         difficultyInfo = intent.getStringExtra("DIFFICULTY");
         modeInfo = intent.getIntExtra("MODE", 1);
+        totalRounds = intent.getIntExtra("TOTAL_ROUNDS", 1);
 
-        // 모드에 따라 다른 레이아웃 사용
         if (modeInfo == 1) {
             setContentView(R.layout.activity_game_singleplayer);
         } else {
@@ -66,33 +75,6 @@ public class GameActivity extends AppCompatActivity {
         }
 
         initializeUI();
-        initializeGameLogic();
-    }
-
-    private void initializeUI() {
-        if (modeInfo == 1) {
-            // 1인용 UI 참조
-            roundText = findViewById(R.id.chooseround);
-            difficultyText = findViewById(R.id.choosedifficulty);
-            modeText = findViewById(R.id.choosemode);
-            timeTextView = findViewById(R.id.timeTextView);
-
-            roundText.setText("라운드: " + roundInfo);
-            difficultyText.setText("난이도: " + difficultyInfo);
-            modeText.setText("게임 모드: " + modeInfo + "인용");
-
-        } else {
-            // 2인용 UI 참조
-            TextView roundTextMulti = findViewById(R.id.chooseround_multi);
-            TextView modeTextMulti = findViewById(R.id.choosemode_multi);
-            elapsedTimeTextView = findViewById(R.id.elapsedTimeTextView);
-
-            roundTextMulti.setText("라운드: " + roundInfo);
-            modeTextMulti.setText("게임 모드: " + modeInfo + "인용");
-        }
-    }
-
-    private void initializeGameLogic() {
         Difficulty diffEnum;
         try {
             diffEnum = Difficulty.valueOf(difficultyInfo.toUpperCase());
@@ -103,7 +85,10 @@ public class GameActivity extends AppCompatActivity {
         Player player1 = new Player("Player 1");
         Player player2 = (modeInfo == 2) ? new Player("Player 2") : null;
 
-        GameManager gameManager = new GameManager(diffEnum, roundInfo, player1, player2);
+        GameManager gameManager = new GameManager(diffEnum, totalRounds, roundInfo, player1, player2);
+        // currentRound 설정 (여기서는 roundInfo를 currentRound로 삼지는 않았지만 필요하다면 GameManager 수정)
+        // gameManager.setCurrentRound(roundInfo); // 필요시 GameManager에 setter 추가.
+
         NetworkService networkService = new NetworkServiceImpl();
 
         initializeCardIds();
@@ -112,6 +97,54 @@ public class GameActivity extends AppCompatActivity {
 
         gameController = new GameController(this, gameManager, networkService);
         gameManager.startGame();
+    }
+
+    private void initializeUI() {
+        if (modeInfo == 1) {
+            roundText = findViewById(R.id.chooseround);
+            difficultyText = findViewById(R.id.choosedifficulty);
+            modeText = findViewById(R.id.choosemode);
+            timeTextView = findViewById(R.id.timeTextView);
+
+            correctCountTextView = findViewById(R.id.correctCountTextView);
+            wrongCountTextView = findViewById(R.id.wrongCountTextView);
+
+            roundText.setText("라운드: " + roundInfo + "/" + totalRounds);
+            difficultyText.setText("난이도: " + difficultyInfo);
+            modeText.setText("게임 모드: 1인용");
+        } else {
+            TextView roundTextMulti = findViewById(R.id.chooseround_multi);
+            TextView modeTextMulti = findViewById(R.id.choosemode_multi);
+            elapsedTimeTextView = findViewById(R.id.elapsedTimeTextView);
+
+            player1CorrectTextView = findViewById(R.id.player1CorrectTextView);
+            player1WrongTextView = findViewById(R.id.player1WrongTextView);
+            player2CorrectTextView = findViewById(R.id.player2CorrectTextView);
+            player2WrongTextView = findViewById(R.id.player2WrongTextView);
+
+            roundTextMulti.setText("라운드: " + roundInfo + "/" + totalRounds);
+            modeTextMulti.setText("게임 모드: 2인용");
+        }
+    }
+
+    public void updateScoreUI(Player p1, Player p2) {
+        if (modeInfo == 1) {
+            if (p1 != null && correctCountTextView != null && wrongCountTextView != null) {
+                correctCountTextView.setText("Correct: " + p1.getCorrectCount());
+                wrongCountTextView.setText("Wrong: " + p1.getWrongCount());
+            }
+        } else {
+            if (p1 != null && p2 != null &&
+                    player1CorrectTextView != null && player1WrongTextView != null &&
+                    player2CorrectTextView != null && player2WrongTextView != null) {
+
+                player1CorrectTextView.setText("P1 Correct:" + p1.getCorrectCount());
+                player1WrongTextView.setText("P1 Wrong:" + p1.getWrongCount());
+
+                player2CorrectTextView.setText("P2 Correct:" + p2.getCorrectCount());
+                player2WrongTextView.setText("P2 Wrong:" + p2.getWrongCount());
+            }
+        }
     }
 
     private void initializeCardIds() {
@@ -132,13 +165,6 @@ public class GameActivity extends AppCompatActivity {
         boardCards = new ArrayList<>();
         Collections.shuffle(cardIds);
         List<Integer> selectedCards = cardIds.subList(0, BOARD_SIZE / 2);
-
-        List<Integer> positions = new ArrayList<>();
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            positions.add(i);
-        }
-        Collections.shuffle(positions);
-
         for (Integer cardId : selectedCards) {
             boardCards.add(new Card(cardId, CardType.NORMAL));
             boardCards.add(new Card(cardId, CardType.NORMAL));
@@ -170,7 +196,6 @@ public class GameActivity extends AppCompatActivity {
                     FrameLayout.LayoutParams.MATCH_PARENT
             ));
             cardImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
-
             cardImage.setImageResource(R.drawable.back);
 
             Card currentCard = boardCards.get(i);
@@ -208,16 +233,15 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void showItemDialog(List<ItemEffect> items) {
-        ItemDialogFragment dialog = new ItemDialogFragment(items, gameController);
-        dialog.show(getSupportFragmentManager(), "ItemDialog");
+        // 아이템 다이얼로그 예: 미구현
     }
 
     public void updatePlayerItems(List<ItemEffect> items) {
-        // 모드 별로 필요하다면 구현
+        // 필요시 구현
     }
 
     public void updateCurrentPlayer(Player player) {
-        // 2인용일 경우 현재 플레이어 표시를 변경할 수도 있음
+        // 2인용일 경우 현재 플레이어 정보 표시 가능
     }
 
     public void showMatch(int position1, int position2) {
@@ -228,10 +252,8 @@ public class GameActivity extends AppCompatActivity {
         // 아이템 획득 알림
     }
 
-    public void navigateToResultActivity(GameResult gameResult) {
-        Intent intent = new Intent(this, ResultActivity.class);
-        startActivity(intent);
-        finish();
+    public void navigateToResultActivity(GameResult gameResult, long timeSpent) {
+        // Controller에서 처리하므로 여기는 사용 안 할 수도 있음
     }
 
     public void showErrorDialog(String title, String message) {
@@ -257,15 +279,12 @@ public class GameActivity extends AppCompatActivity {
 
             if (card.isFlipped()) {
                 cardImage.setImageResource(card.getId());
-                cardImage.setTag("flipped");
             } else {
                 cardImage.setImageResource(R.drawable.back);
-                cardImage.setTag("back");
             }
         }
     }
 
-    // 1인용 모드에서 남은 시간 업데이트
     public void updateTimeUI(long remainingMillis) {
         if (modeInfo == 1 && timeTextView != null) {
             int seconds = (int) (remainingMillis / 1000) % 60;
@@ -274,7 +293,6 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    // 2인용 모드에서 경과 시간 업데이트 (필요하다면 GameController에서 호출)
     public void updateElapsedTimeUI(long elapsedMillis) {
         if (modeInfo == 2 && elapsedTimeTextView != null) {
             int seconds = (int) (elapsedMillis / 1000) % 60;
@@ -283,4 +301,3 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 }
-
