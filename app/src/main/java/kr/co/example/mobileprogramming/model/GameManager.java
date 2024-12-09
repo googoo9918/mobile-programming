@@ -1,6 +1,5 @@
 package kr.co.example.mobileprogramming.model;
 
-import android.util.Log;
 import android.util.Pair;
 
 import java.util.ArrayList;
@@ -23,13 +22,13 @@ public class GameManager {
     private GameEventListener gameEventListener;
     private GameErrorListener gameErrorListener;
 
-    public GameManager(Difficulty difficulty, int totalRounds, Player player1, Player player2) {
+    public GameManager(Difficulty difficulty, int totalRounds, int currentRound, Player player1, Player player2) {
         this.difficulty = difficulty;
         this.totalRounds = totalRounds;
         this.player1 = player1;
         this.player2 = player2;
         this.currentPlayer = player1;
-        this.currentRound = 1;
+        this.currentRound = currentRound;
         this.selectedCards = new ArrayList<>();
     }
 
@@ -141,6 +140,12 @@ public class GameManager {
     public Player getPlayer1() { return player1; }
     public Player getPlayer2() { return player2; }
 
+    public void notifyCardFlipped(int position, Card card) {
+        if (gameEventListener != null) {
+            gameEventListener.onCardFlipped(position, card);
+        }
+    }
+
     public Difficulty getDifficulty() {
         return difficulty;
     }
@@ -203,5 +208,9 @@ public class GameManager {
             return null;
         }
         return (currentPlayer == player1) ? player2 : player1;
+    }
+
+    public List<Pair<Integer, Card>> getSelectedCards() {
+        return selectedCards;
     }
 }
