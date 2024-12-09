@@ -10,5 +10,9 @@ public class GameResult {
         this.player1Score = player1Score;
         this.player2Score = player2Score;
     }
+
+    public Player getWinner() {
+        return winner;
+    }
 }
 
