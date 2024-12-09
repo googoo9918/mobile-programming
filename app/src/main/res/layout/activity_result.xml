@@ -1,6 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context="kr.co.example.mobileprogramming.view.ResultActivity">
 
+    <TextView
+        android:id="@+id/difficultyResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="난이도: "
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="16dp"/>
+
+    <TextView
+        android:id="@+id/timeSpentResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="걸린 시간: "
+        app:layout_constraintTop_toBottomOf="@id/difficultyResult"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="16dp"/>
+
+    <TextView
+        android:id="@+id/infoResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="결과 정보"
+        app:layout_constraintTop_toBottomOf="@id/timeSpentResult"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="16dp"/>
+
+    <Button
+        android:id="@+id/nextRoundButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="다음 라운드로"
+        app:layout_constraintTop_toBottomOf="@id/infoResult"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="16dp"
+        android:visibility="gone"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
