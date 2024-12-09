@@ -60,7 +60,10 @@ public class GameSettingActivity extends AppCompatActivity {
 
     private Intent createGameIntent(RadioGroup roundGroup, RadioGroup difficultyGroup, RadioGroup modeGroup) {
         Intent intent = new Intent(this, GameActivity.class);
-        intent.putExtra("ROUND", getRoundValue(roundGroup));
+        int totalRounds = getRoundValue(roundGroup);
+        int currentRound = 1; // 게임 시작 시 현재 라운드는 항상 1
+        intent.putExtra("ROUND", currentRound);
+        intent.putExtra("TOTAL_ROUNDS", totalRounds);
         intent.putExtra("DIFFICULTY", getDifficultyValue(difficultyGroup));
         intent.putExtra("MODE", getModeValue(modeGroup));
         return intent;
