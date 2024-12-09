@@ -1,6 +1,5 @@
 package kr.co.example.mobileprogramming.model;
 
-import android.content.ClipData;
 import android.util.Log;
 import android.util.Pair;
 
@@ -222,4 +221,14 @@ public class GameManager {
         }
         return (currentPlayer == player1) ? player2 : player1;
     }
+
+    public boolean isAllCardsMatched() {
+        for (Card card : board.getCards()) {
+            if (!card.isMatched()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

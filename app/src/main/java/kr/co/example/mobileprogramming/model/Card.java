@@ -29,5 +29,10 @@ public class Card {
     public void setMatched() {
         this.isMatched = true;
     }
+
+    public boolean isMatched() {
+        return isMatched;
+    }
+
     public String getImageResource() { return imageResource; }
 }
