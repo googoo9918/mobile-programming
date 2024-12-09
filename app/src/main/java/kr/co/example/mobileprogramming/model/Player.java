@@ -11,10 +11,29 @@ public class Player {
     //보유한 아이템 효과
     private List<ItemEffect> items;
 
+    private int correctCount = 0;
+    private int wrongCount = 0;
+
     public Player(String name) {
         this.name = name;
         this.score = 0;
         this.items = new ArrayList<>();
+    }
+
+    public void addCorrect() {
+        correctCount++;
+    }
+
+    public void addWrong() {
+        wrongCount++;
+    }
+
+    public int getCorrectCount() {
+        return correctCount;
+    }
+
+    public int getWrongCount() {
+        return wrongCount;
     }
 
     public void addScore(int points) {
