@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -32,6 +33,9 @@ android {
 }
 
 dependencies {
+    // Firebase 라이브러리
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation("com.google.firebase:firebase-analytics")
 
     // Android 기본 라이브러리
     implementation(libs.appcompat)
