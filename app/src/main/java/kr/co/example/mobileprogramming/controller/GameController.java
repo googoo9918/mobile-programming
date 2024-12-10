@@ -2,6 +2,7 @@ package kr.co.example.mobileprogramming.controller;
 
 import android.content.Intent;
 import android.os.Handler;
+import android.util.Pair;
 
 import kr.co.example.mobileprogramming.events.GameErrorListener;
 import kr.co.example.mobileprogramming.events.GameEventListener;
@@ -17,8 +18,6 @@ import kr.co.example.mobileprogramming.model.Player;
 import kr.co.example.mobileprogramming.network.DataReceivedListener;
 import kr.co.example.mobileprogramming.network.NetworkService;
 import kr.co.example.mobileprogramming.view.GameActivity;
-
-import android.util.Pair;
 
 public class GameController implements GameEventListener, GameErrorListener, OnItemSelectedListener, DataReceivedListener {
     private GameActivity gameActivity;
@@ -109,9 +108,8 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
     }
 
     public void onCardSelected(int position) {
-        if (isPaused) {
-            return; // 일시 정지 중에는 카드 선택 불가
-        }
+        if (isPaused) return;
+
         boolean success = gameManager.selectCard(position);
         if (success) {
             gameActivity.refreshUI();
@@ -121,9 +119,18 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
                     gameActivity.refreshUI();
                     updateScoreUI();
                     checkGameOverCondition();
+
+                    // 여기서 변경된 상태 전송(2인용 모드일 경우)
+                    if (!isSinglePlayer) {
+                        networkService.sendData(gameManager.toGameState());
+                    }
                 }, 1000);
             } else {
                 checkGameOverCondition();
+                // 카드를 한 장만 뒤집은 경우에도 상태 전송 필요할 수 있음
+                if (!isSinglePlayer) {
+                    networkService.sendData(gameManager.toGameState());
+                }
             }
         } else {
             onInvalidMove("선택한 카드를 뒤집을 수 없습니다.");
@@ -153,6 +160,11 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         boolean used = currentPlayer.useItem(itemType, gameManager);
         if (used) {
             gameActivity.updatePlayerItems(currentPlayer.getItems());
+
+            // 아이템 사용 후 상태 전송
+            if (!isSinglePlayer) {
+                networkService.sendData(gameManager.toGameState());
+            }
         } else {
             onGameLogicError("아이템을 사용할 수 없습니다.");
         }
