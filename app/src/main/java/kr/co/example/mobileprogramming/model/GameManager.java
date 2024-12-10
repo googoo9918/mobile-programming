@@ -200,7 +200,20 @@ public class GameManager {
     }
 
     public void updateGameState(GameState gameState) {
-        // 필요시 구현
+        this.board = gameState.getBoard();
+        this.player1 = gameState.getPlayer1();
+        this.player2 = gameState.getPlayer2();
+        this.currentPlayer = gameState.getCurrentPlayer();
+        this.currentRound = gameState.getCurrentRound();
+
+        // 상태 변경 후 UI 업데이트를 위한 이벤트 호출
+        if (gameEventListener != null) {
+            gameEventListener.onGameStateUpdated();
+        }
+    }
+
+    public GameState toGameState() {
+        return new GameState(board, player1, player2, currentPlayer, currentRound);
     }
 
     public Player getOpponent(Player currentPlayer) {
