@@ -2,6 +2,7 @@ package kr.co.example.mobileprogramming.controller;
 
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Pair;
 
 import kr.co.example.mobileprogramming.events.GameErrorListener;
@@ -180,26 +181,32 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
     }
 
     public void revealAllCardsTemporarily() {
+        // 일반 카드만 임시로 앞면 표시
         for (int i = 0; i < gameManager.getBoard().getCards().size(); i++) {
             Card card = gameManager.getBoard().getCardAt(i);
-            if (!card.isFlipped() && card.getType() == CardType.NORMAL) {
-                card.flip();
+            if (!card.isFlipped() && card.getType() == CardType.NORMAL && !card.isMatched()) {
+                card.flip(); // 뒷면->앞면
             }
         }
 
         gameActivity.refreshUI();
 
-        int revealTime = getRevealTime();
-        new Handler().postDelayed(() -> {
+        int revealTime = getRevealTime(); // 예: EASY=10000ms(10초), NORMAL=5000ms(5초), HARD=3000ms(3초)
+
+        // revealTime 후에 다시 일반 카드 뒤집기
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
             for (int i = 0; i < gameManager.getBoard().getCards().size(); i++) {
                 Card card = gameManager.getBoard().getCardAt(i);
-                if (card.isFlipped() && !card.isMatched()) {
-                    card.flip();
+                // 매칭 안 된 NORMAL 카드만 다시 뒤집어서 뒷면으로
+                if (card.isFlipped() && !card.isMatched() && card.getType() == CardType.NORMAL) {
+                    card.flip(); // 앞면->뒷면
                 }
             }
             gameActivity.refreshUI();
         }, revealTime);
     }
+
+
 
     @Override
     public void onGameStarted() {

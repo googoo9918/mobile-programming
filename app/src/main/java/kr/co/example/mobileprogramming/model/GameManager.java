@@ -76,16 +76,19 @@ public class GameManager {
             currentPlayer.addCorrect();
             card1.setMatched();
             card2.setMatched();
+
+            int scoreToAdd = 1; // 기본은 일반 카드 매칭시 1점
             if (card1.getType() == CardType.ITEM) {
+                // 아이템 카드라면 3점 부여
+                scoreToAdd = 3;
                 ItemCard itemCard = (ItemCard) card1;
                 ItemEffect itemEffect = itemCard.createItemEffect();
                 currentPlayer.addItemEffect(itemEffect);
-
                 if (gameEventListener != null) {
                     gameEventListener.onItemAcquired(itemCard);
                 }
             }
-            currentPlayer.addScore(1);
+            currentPlayer.addScore(scoreToAdd);
             if (gameEventListener != null) {
                 gameEventListener.onMatchFound(selectedCards.get(0).first, selectedCards.get(1).first);
             }

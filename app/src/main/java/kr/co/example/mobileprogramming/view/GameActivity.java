@@ -14,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -29,6 +28,7 @@ import kr.co.example.mobileprogramming.model.Difficulty;
 import kr.co.example.mobileprogramming.model.GameManager;
 import kr.co.example.mobileprogramming.model.GameResult;
 import kr.co.example.mobileprogramming.model.ItemCard;
+import kr.co.example.mobileprogramming.model.ItemType;
 import kr.co.example.mobileprogramming.model.Player;
 import kr.co.example.mobileprogramming.model.itemeffects.ItemEffect;
 import kr.co.example.mobileprogramming.network.NetworkService;
@@ -173,14 +173,66 @@ public class GameActivity extends AppCompatActivity {
 
     private void setupBoard() {
         boardCards = new ArrayList<>();
-        Collections.shuffle(cardIds);
-        List<Integer> selectedCards = cardIds.subList(0, BOARD_SIZE / 2);
-        for (Integer cardId : selectedCards) {
-            boardCards.add(new Card(cardId, CardType.NORMAL));
-            boardCards.add(new Card(cardId, CardType.NORMAL));
+
+        // 모드 체크 (1인용/2인용). 2인용일 때만 아이템 카드 로직 적용
+        if (modeInfo == 2) {
+
+            List<Integer> itemCardIds = new ArrayList<>();
+            itemCardIds.add(R.drawable.item_doublescore);
+            itemCardIds.add(R.drawable.item_turnextension);
+            itemCardIds.add(R.drawable.item_remove);
+            itemCardIds.add(R.drawable.item_revealcard);
+            itemCardIds.add(R.drawable.item_steal);
+
+            //아이템 카드용 리소스 4개 선택
+            Collections.shuffle(itemCardIds);
+            List<Integer> selectedItemCardIds = itemCardIds.subList(0, 4);
+
+            // 일반 카드 14쌍(28장) 선택
+            Collections.shuffle(cardIds);
+            List<Integer> selectedNormalCardIds = cardIds.subList(0, 14); // 14개 선택
+
+            // boardCards에 일반 카드 14쌍 + 아이템 카드 4쌍 추가
+            for (Integer normalId : selectedNormalCardIds) {
+                boardCards.add(new Card(normalId, CardType.NORMAL));
+                boardCards.add(new Card(normalId, CardType.NORMAL));
+            }
+
+            for (Integer itemId : selectedItemCardIds) {
+                ItemType itemType = mapImageResourceToItemType(itemId);
+                boardCards.add(new ItemCard(itemId, itemType));
+                boardCards.add(new ItemCard(itemId, itemType));
+            }
+
+            Collections.shuffle(boardCards);
+
+        } else {
+            Collections.shuffle(cardIds);
+            List<Integer> selectedCards = cardIds.subList(0, BOARD_SIZE / 2);
+            for (Integer cardId : selectedCards) {
+                boardCards.add(new Card(cardId, CardType.NORMAL));
+                boardCards.add(new Card(cardId, CardType.NORMAL));
+            }
+            Collections.shuffle(boardCards);
         }
-        Collections.shuffle(boardCards);
     }
+
+    private ItemType mapImageResourceToItemType(int itemResourceId) {
+        if (itemResourceId == R.drawable.item_doublescore) {
+            return ItemType.DOUBLE_SCORE;
+        } else if (itemResourceId == R.drawable.item_turnextension) {
+            return ItemType.TURN_EXTENSION;
+        } else if (itemResourceId == R.drawable.item_remove) {
+            return ItemType.REMOVE_OPPONENT_ITEM;
+        } else if (itemResourceId == R.drawable.item_revealcard) {
+            return ItemType.REVEAL_CARD;
+        } else if (itemResourceId == R.drawable.item_steal) {
+            return ItemType.STEAL_ITEM;
+        } else {
+            throw new IllegalArgumentException("Unknown item resource id: " + itemResourceId);
+        }
+    }
+
 
     public void displayCards() {
         GridLayout gridLayout = findViewById(R.id.cardGrid);
