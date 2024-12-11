@@ -2,7 +2,10 @@ package kr.co.example.mobileprogramming.controller;
 
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Pair;
+
+import java.util.List;
 
 import kr.co.example.mobileprogramming.events.GameErrorListener;
 import kr.co.example.mobileprogramming.events.GameEventListener;
@@ -15,6 +18,7 @@ import kr.co.example.mobileprogramming.model.GameState;
 import kr.co.example.mobileprogramming.model.ItemCard;
 import kr.co.example.mobileprogramming.model.ItemType;
 import kr.co.example.mobileprogramming.model.Player;
+import kr.co.example.mobileprogramming.model.itemeffects.ItemEffect;
 import kr.co.example.mobileprogramming.network.DataReceivedListener;
 import kr.co.example.mobileprogramming.network.NetworkService;
 import kr.co.example.mobileprogramming.view.GameActivity;
@@ -151,7 +155,15 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
     }
 
     public void onItemUseRequested() {
-        gameActivity.showItemDialog(gameManager.getCurrentPlayer().getItems());
+        // 현재 플레이어의 아이템 목록을 가져옴
+        List<ItemEffect> items = gameManager.getCurrentPlayer().getItems();
+        if (items.isEmpty()) {
+            gameActivity.showToast("사용할 아이템이 없습니다.");
+            return;
+        }
+
+        // 아이템 선택 다이얼로그 표시
+        gameActivity.showItemDialog(items);
     }
 
     @Override
@@ -180,26 +192,32 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
     }
 
     public void revealAllCardsTemporarily() {
+        // 일반 카드만 임시로 앞면 표시
         for (int i = 0; i < gameManager.getBoard().getCards().size(); i++) {
             Card card = gameManager.getBoard().getCardAt(i);
-            if (!card.isFlipped() && card.getType() == CardType.NORMAL) {
-                card.flip();
+            if (!card.isFlipped() && card.getType() == CardType.NORMAL && !card.isMatched()) {
+                card.flip(); // 뒷면->앞면
             }
         }
 
         gameActivity.refreshUI();
 
-        int revealTime = getRevealTime();
-        new Handler().postDelayed(() -> {
+        int revealTime = getRevealTime(); // 예: EASY=10000ms(10초), NORMAL=5000ms(5초), HARD=3000ms(3초)
+
+        // revealTime 후에 다시 일반 카드 뒤집기
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
             for (int i = 0; i < gameManager.getBoard().getCards().size(); i++) {
                 Card card = gameManager.getBoard().getCardAt(i);
-                if (card.isFlipped() && !card.isMatched()) {
-                    card.flip();
+                // 매칭 안 된 NORMAL 카드만 다시 뒤집어서 뒷면으로
+                if (card.isFlipped() && !card.isMatched() && card.getType() == CardType.NORMAL) {
+                    card.flip(); // 앞면->뒷면
                 }
             }
             gameActivity.refreshUI();
         }, revealTime);
     }
+
+
 
     @Override
     public void onGameStarted() {
@@ -221,8 +239,15 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
 
     @Override
     public void onItemAcquired(ItemCard itemCard) {
+        // 아이템 카드 획득 이벤트
+        // 현재 턴 플레이어가 아이템 획득
+        Player currentPlayer = gameManager.getCurrentPlayer();
         gameActivity.showItemAcquired(itemCard);
+
+        // 아이템 UI 갱신
+        gameActivity.updatePlayerItems(currentPlayer.getItems());
     }
+
 
     @Override
     public void onTurnChanged(Player currentPlayer) {
