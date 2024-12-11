@@ -1,7 +1,5 @@
 package kr.co.example.mobileprogramming.model;
 
-import kr.co.example.mobileprogramming.model.itemeffects.BombLoseAllItemsEffect;
-import kr.co.example.mobileprogramming.model.itemeffects.BombMinusOneEffect;
 import kr.co.example.mobileprogramming.model.itemeffects.DoubleScoreEffect;
 import kr.co.example.mobileprogramming.model.itemeffects.ItemEffect;
 import kr.co.example.mobileprogramming.model.itemeffects.RemoveOpponentItemEffect;
@@ -31,10 +29,6 @@ public class ItemCard extends Card {
                 return new RevealCardEffect();
             case STEAL_ITEM:
                 return new StealItemEffect();
-            case BOMB_MINUS_ONE:
-                return new BombMinusOneEffect();
-            case BOMB_LOSE_ALL_ITEMS:
-                return new BombLoseAllItemsEffect();
             default:
                 throw new IllegalArgumentException("Unknown item type: " + itemType);
         }

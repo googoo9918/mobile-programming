@@ -10,9 +10,11 @@ import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.lang.reflect.Field;
@@ -139,11 +141,13 @@ public class GameActivity extends AppCompatActivity {
 
     public void updateScoreUI(Player p1, Player p2) {
         if (modeInfo == 1) {
+            // 1인용 모드는 기존 Correct/Wrong만 표시
             if (p1 != null && correctCountTextView != null && wrongCountTextView != null) {
                 correctCountTextView.setText("Correct: " + p1.getCorrectCount());
                 wrongCountTextView.setText("Wrong: " + p1.getWrongCount());
             }
         } else {
+            // 2인용 모드: 기존 Correct/Wrong + Score 표시
             if (p1 != null && p2 != null &&
                     player1CorrectTextView != null && player1WrongTextView != null &&
                     player2CorrectTextView != null && player2WrongTextView != null) {
@@ -153,6 +157,15 @@ public class GameActivity extends AppCompatActivity {
 
                 player2CorrectTextView.setText("P2 Correct:" + p2.getCorrectCount());
                 player2WrongTextView.setText("P2 Wrong:" + p2.getWrongCount());
+
+                // 추가: Score TextView 가져오기 (레이아웃에 player1ScoreTextView, player2ScoreTextView가 존재한다고 가정)
+                TextView player1ScoreTextView = findViewById(R.id.player1ScoreTextView);
+                TextView player2ScoreTextView = findViewById(R.id.player2ScoreTextView);
+
+                if (player1ScoreTextView != null && player2ScoreTextView != null) {
+                    player1ScoreTextView.setText("P1 Score:" + p1.getScore());
+                    player2ScoreTextView.setText("P2 Score:" + p2.getScore());
+                }
             }
         }
     }
@@ -295,11 +308,63 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void showItemDialog(List<ItemEffect> items) {
-        // 아이템 다이얼로그 예: 미구현
+        // 예: 아이템 리스트를 문자열 배열로 변환
+        CharSequence[] itemNames = new CharSequence[items.size()];
+        for (int i = 0; i < items.size(); i++) {
+            itemNames[i] = items.get(i).getItemType().name();
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("아이템 선택")
+                .setItems(itemNames, (dialog, which) -> {
+                    ItemType selectedType = items.get(which).getItemType();
+                    // 아이템 선택 시 GameController의 onItemSelected(itemType) 호출
+                    // GameController가 OnItemSelectedListener 구현한다면:
+                    if (gameController != null) {
+                        gameController.onItemSelected(selectedType);
+                    }
+                })
+                .show();
     }
 
     public void updatePlayerItems(List<ItemEffect> items) {
-        // 필요시 구현
+        LinearLayout itemCardContainer = findViewById(R.id.itemCardContainer);
+        if (itemCardContainer == null) return;
+
+        itemCardContainer.removeAllViews();
+
+        // 아이템 효과별로 다른 이미지 리소스 매핑
+        for (ItemEffect effect : items) {
+            ItemType itemType = effect.getItemType();
+            int itemIconRes = getItemIconForType(itemType);
+
+            ImageView itemView = new ImageView(this);
+            itemView.setLayoutParams(new LinearLayout.LayoutParams(80, 80));
+            itemView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            itemView.setImageResource(itemIconRes);
+
+            // 필요하다면 OnClickListener를 달아 특정 아이템을 선택하는 기능 구현 가능
+            itemCardContainer.addView(itemView);
+        }
+    }
+
+    // ItemType에 따른 아이콘 리소스 매핑 메서드 예시
+    private int getItemIconForType(ItemType type) {
+        // 프로젝트 리소스에 맞게 수정
+        switch (type) {
+            case DOUBLE_SCORE:
+                return R.drawable.item_doublescore;
+            case TURN_EXTENSION:
+                return R.drawable.item_turnextension;
+            case REMOVE_OPPONENT_ITEM:
+                return R.drawable.item_remove;
+            case REVEAL_CARD:
+                return R.drawable.item_revealcard;
+            case STEAL_ITEM:
+                return R.drawable.item_steal;
+            default:
+                return 0;
+        }
     }
 
     public void updateCurrentPlayer(Player player) {

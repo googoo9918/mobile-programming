@@ -5,6 +5,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Pair;
 
+import java.util.List;
+
 import kr.co.example.mobileprogramming.events.GameErrorListener;
 import kr.co.example.mobileprogramming.events.GameEventListener;
 import kr.co.example.mobileprogramming.events.OnItemSelectedListener;
@@ -16,6 +18,7 @@ import kr.co.example.mobileprogramming.model.GameState;
 import kr.co.example.mobileprogramming.model.ItemCard;
 import kr.co.example.mobileprogramming.model.ItemType;
 import kr.co.example.mobileprogramming.model.Player;
+import kr.co.example.mobileprogramming.model.itemeffects.ItemEffect;
 import kr.co.example.mobileprogramming.network.DataReceivedListener;
 import kr.co.example.mobileprogramming.network.NetworkService;
 import kr.co.example.mobileprogramming.view.GameActivity;
@@ -152,7 +155,15 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
     }
 
     public void onItemUseRequested() {
-        gameActivity.showItemDialog(gameManager.getCurrentPlayer().getItems());
+        // 현재 플레이어의 아이템 목록을 가져옴
+        List<ItemEffect> items = gameManager.getCurrentPlayer().getItems();
+        if (items.isEmpty()) {
+            gameActivity.showToast("사용할 아이템이 없습니다.");
+            return;
+        }
+
+        // 아이템 선택 다이얼로그 표시
+        gameActivity.showItemDialog(items);
     }
 
     @Override
@@ -228,8 +239,15 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
 
     @Override
     public void onItemAcquired(ItemCard itemCard) {
+        // 아이템 카드 획득 이벤트
+        // 현재 턴 플레이어가 아이템 획득
+        Player currentPlayer = gameManager.getCurrentPlayer();
         gameActivity.showItemAcquired(itemCard);
+
+        // 아이템 UI 갱신
+        gameActivity.updatePlayerItems(currentPlayer.getItems());
     }
+
 
     @Override
     public void onTurnChanged(Player currentPlayer) {
