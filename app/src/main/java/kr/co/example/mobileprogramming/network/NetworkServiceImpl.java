@@ -2,21 +2,24 @@ package kr.co.example.mobileprogramming.network;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
 import kr.co.example.mobileprogramming.model.Board;
-import kr.co.example.mobileprogramming.model.Difficulty;
+import kr.co.example.mobileprogramming.model.Card;
 import kr.co.example.mobileprogramming.model.GameState;
-import kr.co.example.mobileprogramming.model.Player;
-import kr.co.example.mobileprogramming.view.GameActivity;
+import kr.co.example.mobileprogramming.model.ItemCard;
 
 public class NetworkServiceImpl implements NetworkService {
 
@@ -50,20 +53,16 @@ public class NetworkServiceImpl implements NetworkService {
                 isPlayer1 = false; // 기존 방에 참여자는 Player 2
                 joinExistingRoom(existingRoomId, success -> {
                     if (success) {
-                        Log.d("Firebase", "기존 방에 합류: " + existingRoomId);
                         callback.accept(true);
                     } else {
-                        Log.e("Firebase", "기존 방에 합류 실패");
                         callback.accept(false);
                     }
                 });
             } else {
                 createNewRoom(roundInfo, difficultyInfo, success -> {
                     if (success) {
-                        Log.d("Firebase", "새로운 방 생성: " + roomId);
                         callback.accept(true);
                     } else {
-                        Log.e("Firebase", "새로운 방 생성 실패");
                         callback.accept(false);
                     }
                 });
@@ -87,7 +86,7 @@ public class NetworkServiceImpl implements NetworkService {
                         }
                     }
                 }
-                callback.accept(null); // 적합한 방이 없으면 null 반환
+                callback.accept(null); // 적합한 방이 없으면
             }
 
             @Override
@@ -128,7 +127,6 @@ public class NetworkServiceImpl implements NetworkService {
 
         Map<String, Object> roomData = new HashMap<>();
         roomData.put("roomId", newRoomId);
-        roomData.put("isPlayer1", true);
         roomData.put("state", "waiting");
         roomData.put("roundInfo", roundInfo);
         roomData.put("difficultyInfo", difficultyInfo);
@@ -136,7 +134,6 @@ public class NetworkServiceImpl implements NetworkService {
         gamesRef.child(newRoomId).setValue(roomData)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Log.d("Firebase", "Created new room: " + newRoomId);
                         callback.accept(true);
                     } else {
                         Log.e("Firebase", "Failed to create room", task.getException());
@@ -144,4 +141,55 @@ public class NetworkServiceImpl implements NetworkService {
                     }
                 });
     }
+
+    public void uploadBoard(Board board) {
+        if (isPlayer1 && roomId != null) {
+            // 보드 데이터를 Firebase에 업로드
+            gamesRef.child(roomId).child("board").setValue(board)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            // Ready 신호 보내기
+                            gamesRef.child(roomId).child("ready").setValue(true);
+                        } else {
+                            Log.e("Firebase", "Failed to upload board", task.getException());
+                        }
+                    });
+        }
+    }
+
+    public void listenForBoard(Consumer<List<Card>> callback) {
+        gamesRef.child(roomId).child("board").child("cards")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            List<Card> loadedCards = new ArrayList<>();
+                            for (DataSnapshot cardSnapshot : dataSnapshot.getChildren()) {
+                                // Check if the card is an ItemCard
+                                if (cardSnapshot.child("itemType").exists()) {
+                                    ItemCard itemCard = cardSnapshot.getValue(ItemCard.class);
+                                    if (itemCard != null) {
+                                        loadedCards.add(itemCard);
+                                    }
+                                } else {
+                                    Card card = cardSnapshot.getValue(Card.class);
+                                    if (card != null) {
+                                        loadedCards.add(card);
+                                    }
+                                }
+                            }
+                            callback.accept(loadedCards); // Return the board through callback
+                        } else {
+                            callback.accept(null); // No board found
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.e("Firebase", "Failed to read board data: " + databaseError.getMessage());
+                        callback.accept(null); // Indicate failure
+                    }
+                });
+    }
+
 }

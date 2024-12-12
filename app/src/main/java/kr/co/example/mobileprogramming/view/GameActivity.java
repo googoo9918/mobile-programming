@@ -75,6 +75,7 @@ public class GameActivity extends AppCompatActivity {
     private Button resumeButton;
 
     private NetworkServiceImpl networkService;
+    GameManager gameManager;
 
     private boolean isPlayer1;
 
@@ -91,7 +92,6 @@ public class GameActivity extends AppCompatActivity {
         if (modeInfo == 1) {
             setContentView(R.layout.activity_game_singleplayer);
         } else {
-            connectMulti();
             setContentView(R.layout.activity_game_multiplayer);
         }
 
@@ -106,7 +106,7 @@ public class GameActivity extends AppCompatActivity {
         Player player1 = new Player("Player 1");
         Player player2 = (modeInfo == 2) ? new Player("Player 2") : null;
 
-        GameManager gameManager = new GameManager(diffEnum, totalRounds, roundInfo, player1, player2);
+        gameManager = new GameManager(diffEnum, totalRounds, roundInfo, player1, player2);
         // currentRound 설정 (여기서는 roundInfo를 currentRound로 삼지는 않았지만 필요하다면 GameManager 수정)
         // gameManager.setCurrentRound(roundInfo); // 필요시 GameManager에 setter 추가.
 
@@ -115,6 +115,10 @@ public class GameActivity extends AppCompatActivity {
         initializeCardIds();
         setupBoard();
         gameManager.initializeBoard(boardCards);
+
+        if(modeInfo == 2) {
+            connectMulti();
+        }
 
         gameController = new GameController(this, gameManager, networkService);
         initializePauseUI();
@@ -128,10 +132,37 @@ public class GameActivity extends AppCompatActivity {
             if (success) {
                 // 연결 성공: Player1인지 Player2인지 확인
                 isPlayer1 = networkService.isPlayer1;
-                Log.d("GameActivity", "Multiplayer setup complete. isPlayer1: " + isPlayer1);
 
                 // 플레이어 정보를 Toast로 표시
                 Toast.makeText(this, isPlayer1 ? "You are Player 1" : "You are Player 2", Toast.LENGTH_SHORT).show();
+
+                // 초기 board 정보 송수신
+                if(isPlayer1) {
+                    networkService.uploadBoard(gameManager.getBoard());
+                } else {
+                    networkService.listenForBoard(cards -> {
+                        runOnUiThread(() -> {
+
+                            if (cards != null) {
+                                // 받은 보드를 UI에 반영
+                                gameManager.initializeBoard(cards);
+                                setBoardCards(cards);
+
+                                for (Card card : cards) {
+                                    if (card instanceof ItemCard) {
+                                        ItemCard itemCard = (ItemCard) card;
+                                        Log.d("Firebase", "ItemCard: " + itemCard.getItemType());
+                                    } else {
+                                        Log.d("Firebase", "Card: " + card.getId());
+                                    }
+                                }
+
+                            } else {
+                                Log.e("GameActivity", "Failed to receive board data.");
+                            }
+                        });
+                    });
+                }
 
             } else {
                 // 연결 실패 처리
@@ -503,6 +534,10 @@ public class GameActivity extends AppCompatActivity {
             e.printStackTrace();
             Toast.makeText(this, "일시정지 UI 초기화 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void setBoardCards(List<Card> cards) {
+        this.boardCards = cards;
     }
 
     public void showPauseOverlay() {

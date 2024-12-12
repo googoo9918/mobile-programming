@@ -223,6 +223,7 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
 
     @Override
     public void onGameStarted() {
+        Log.d("game", "game start");
         gameActivity.initializeGameBoard(gameManager.getBoard());
         gameActivity.displayCards();
         revealAllCardsTemporarily();

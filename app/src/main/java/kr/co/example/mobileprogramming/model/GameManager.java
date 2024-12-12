@@ -39,10 +39,7 @@ public class GameManager {
     }
 
     public void initializeBoard(List<Card> boardCards) {
-        // 6x6 고정
-        int rows = 6;
-        int columns = 6;
-        this.board = new Board(rows, columns, boardCards);
+        this.board = new Board(boardCards);
     }
 
     public boolean selectCard(int position) {
@@ -74,8 +71,8 @@ public class GameManager {
         if (card1.getId() == card2.getId()) {
             // 매칭 성공
             currentPlayer.addCorrect();
-            card1.setMatched();
-            card2.setMatched();
+            card1.setMatched(true);
+            card2.setMatched(true);
 
             int scoreToAdd = 1; // 기본은 일반 카드 매칭시 1점
             if (card1.getType() == CardType.ITEM) {
@@ -228,5 +225,9 @@ public class GameManager {
 
     public List<Pair<Integer, Card>> getSelectedCards() {
         return selectedCards;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
     }
 }
