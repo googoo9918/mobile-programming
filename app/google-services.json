@@ -1,15 +1,16 @@
 {
   "project_info": {
     "project_number": "389721425806",
+    "firebase_url": "https://mobileprogramming-af865-default-rtdb.firebaseio.com",
     "project_id": "mobileprogramming-af865",
     "storage_bucket": "mobileprogramming-af865.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:389721425806:android:7298a87e8c96d13e30c6df",
+        "mobilesdk_app_id": "1:389721425806:android:cecc6ec0ab144f2530c6df",
         "android_client_info": {
-          "package_name": "kr.co.example.mobileprogramming"
+          "package_name": "kr.co.example.mobleprogramming"
         }
       },
       "oauth_client": [],

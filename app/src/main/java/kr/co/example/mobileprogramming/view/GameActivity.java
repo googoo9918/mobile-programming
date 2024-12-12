@@ -3,6 +3,7 @@ package kr.co.example.mobileprogramming.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -29,6 +30,7 @@ import kr.co.example.mobileprogramming.model.CardType;
 import kr.co.example.mobileprogramming.model.Difficulty;
 import kr.co.example.mobileprogramming.model.GameManager;
 import kr.co.example.mobileprogramming.model.GameResult;
+import kr.co.example.mobileprogramming.model.GameState;
 import kr.co.example.mobileprogramming.model.ItemCard;
 import kr.co.example.mobileprogramming.model.ItemType;
 import kr.co.example.mobileprogramming.model.Player;
@@ -72,6 +74,10 @@ public class GameActivity extends AppCompatActivity {
     private ImageButton pauseButton;
     private Button resumeButton;
 
+    private NetworkServiceImpl networkService;
+
+    private boolean isPlayer1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +91,7 @@ public class GameActivity extends AppCompatActivity {
         if (modeInfo == 1) {
             setContentView(R.layout.activity_game_singleplayer);
         } else {
+            connectMulti();
             setContentView(R.layout.activity_game_multiplayer);
         }
 
@@ -112,6 +119,28 @@ public class GameActivity extends AppCompatActivity {
         gameController = new GameController(this, gameManager, networkService);
         initializePauseUI();
         gameManager.startGame();
+    }
+
+    private void connectMulti() {
+        networkService = new NetworkServiceImpl();
+
+        networkService.connect(roundInfo, difficultyInfo, success -> {
+            if (success) {
+                // 연결 성공: Player1인지 Player2인지 확인
+                isPlayer1 = networkService.isPlayer1;
+                Log.d("GameActivity", "Multiplayer setup complete. isPlayer1: " + isPlayer1);
+
+                // 플레이어 정보를 Toast로 표시
+                Toast.makeText(this, isPlayer1 ? "You are Player 1" : "You are Player 2", Toast.LENGTH_SHORT).show();
+
+            } else {
+                // 연결 실패 처리
+                Log.e("GameActivity", "Failed to connect to multiplayer room.");
+                Toast.makeText(this, "Failed to connect to multiplayer room.", Toast.LENGTH_LONG).show();
+                finish(); // 실패 시 액티비티 종료
+            }
+        });
+
     }
 
     private void initializeUI() {
