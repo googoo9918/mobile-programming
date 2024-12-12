@@ -479,6 +479,12 @@ public class GameActivity extends AppCompatActivity {
         pauseButton.setEnabled(true);
     }
 
+    public void onItemUseButtonClicked(View v) {
+        if(gameController != null) {
+            gameController.onItemUseRequested();
+        }
+    }
+
     @Override
     protected void onPause() {
         super.onPause();

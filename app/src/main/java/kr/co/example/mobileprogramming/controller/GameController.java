@@ -3,6 +3,7 @@ package kr.co.example.mobileprogramming.controller;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.util.Pair;
 
 import java.util.List;
@@ -168,6 +169,7 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
 
     @Override
     public void onItemSelected(ItemType itemType) {
+        Log.d("Item", "item "+ itemType + " selected");
         Player currentPlayer = gameManager.getCurrentPlayer();
         boolean used = currentPlayer.useItem(itemType, gameManager);
         if (used) {
