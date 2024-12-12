@@ -192,4 +192,22 @@ public class NetworkServiceImpl implements NetworkService {
                 });
     }
 
+    public void listenForGameState(Consumer<String> callback) {
+        gamesRef.child(roomId).child("state").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String state = snapshot.getValue(String.class);
+                if (state != null) {
+                    callback.accept(state);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("NetworkServiceImpl", "Failed to listen for game state: " + error.getMessage());
+            }
+        });
+    }
+
+
 }

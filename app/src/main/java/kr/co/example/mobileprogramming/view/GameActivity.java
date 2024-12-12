@@ -61,6 +61,9 @@ public class GameActivity extends AppCompatActivity {
     // 멀티플레이 현재 플레이어 표시
     private TextView currentPlayerTextView;
 
+    // 플레이어 대기 로딩
+    private View loadingOverlay;
+    
     private static final int BOARD_SIZE = 36;
     private List<Integer> cardIds;
     private List<Card> boardCards;
@@ -116,13 +119,14 @@ public class GameActivity extends AppCompatActivity {
         setupBoard();
         gameManager.initializeBoard(boardCards);
 
-        if(modeInfo == 2) {
-            connectMulti();
-        }
-
         gameController = new GameController(this, gameManager, networkService);
         initializePauseUI();
-        gameManager.startGame();
+
+        if(modeInfo == 2) {
+            connectMulti();
+        } else {
+            gameManager.startGame();
+        }
     }
 
     private void connectMulti() {
@@ -138,6 +142,7 @@ public class GameActivity extends AppCompatActivity {
 
                 // 초기 board 정보 송수신
                 if(isPlayer1) {
+                    showLoadingScreen("Waiting for Player 2...");
                     networkService.uploadBoard(gameManager.getBoard());
                 } else {
                     networkService.listenForBoard(cards -> {
@@ -163,7 +168,8 @@ public class GameActivity extends AppCompatActivity {
                         });
                     });
                 }
-
+                // playing으로 방 상태가 변경되기를 대기
+                listenForGameState();
             } else {
                 // 연결 실패 처리
                 Log.e("GameActivity", "Failed to connect to multiplayer room.");
@@ -171,8 +177,20 @@ public class GameActivity extends AppCompatActivity {
                 finish(); // 실패 시 액티비티 종료
             }
         });
-
     }
+
+    private void listenForGameState() {
+        networkService.listenForGameState(state -> {
+            if ("playing".equals(state)) {
+                runOnUiThread(() -> {
+                    Log.d("GameActivity", "Game state changed to playing. Starting game...");
+                    hideLoadingScreen(); // 로딩 화면 숨기기
+                    gameManager.startGame(); // 게임 시작
+                });
+            }
+        });
+    }
+
 
     private void initializeUI() {
         if (modeInfo == 1) {
@@ -436,6 +454,29 @@ public class GameActivity extends AppCompatActivity {
         // 2인용일 경우 현재 플레이어 정보 표시 가능
         String playerText = "Current Player: " + currnetPlayer.getName(); // 플레이어 이름
         currentPlayerTextView.setText(playerText);
+    }
+
+    private void showLoadingScreen(String message) {
+        if (loadingOverlay == null) {
+            loadingOverlay = getLayoutInflater().inflate(R.layout.loading_overlay, null);
+            ViewGroup rootView = findViewById(android.R.id.content);
+            if (rootView != null) {
+                rootView.addView(loadingOverlay);
+            }
+        }
+
+        TextView loadingMessage = loadingOverlay.findViewById(R.id.loadingMessage);
+        if (loadingMessage != null) {
+            loadingMessage.setText(message);
+        }
+
+        loadingOverlay.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoadingScreen() {
+        if (loadingOverlay != null) {
+            loadingOverlay.setVisibility(View.GONE);
+        }
     }
 
     public void showMatch(int position1, int position2) {
