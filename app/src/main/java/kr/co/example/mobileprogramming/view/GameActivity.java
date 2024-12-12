@@ -56,6 +56,9 @@ public class GameActivity extends AppCompatActivity {
     private TextView player2CorrectTextView;
     private TextView player2WrongTextView;
 
+    // 멀티플레이 현재 플레이어 표시
+    private TextView currentPlayerTextView;
+
     private static final int BOARD_SIZE = 36;
     private List<Integer> cardIds;
     private List<Card> boardCards;
@@ -133,6 +136,8 @@ public class GameActivity extends AppCompatActivity {
             player1WrongTextView = findViewById(R.id.player1WrongTextView);
             player2CorrectTextView = findViewById(R.id.player2CorrectTextView);
             player2WrongTextView = findViewById(R.id.player2WrongTextView);
+
+            currentPlayerTextView = findViewById(R.id.currentPlayerTextView);
 
             roundTextMulti.setText("라운드: " + roundInfo + "/" + totalRounds);
             modeTextMulti.setText("게임 모드: 2인용");
@@ -367,8 +372,10 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    public void updateCurrentPlayer(Player player) {
+    public void updateCurrentPlayer(Player currnetPlayer) {
         // 2인용일 경우 현재 플레이어 정보 표시 가능
+        String playerText = "Current Player: " + currnetPlayer.getName(); // 플레이어 이름
+        currentPlayerTextView.setText(playerText);
     }
 
     public void showMatch(int position1, int position2) {
