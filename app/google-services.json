@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "978022544024",
-    "project_id": "mobile-programming-4d333",
-    "storage_bucket": "mobile-programming-4d333.firebasestorage.app"
+    "project_number": "389721425806",
+    "project_id": "mobileprogramming-af865",
+    "storage_bucket": "mobileprogramming-af865.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:978022544024:android:74fef9777a8e35b0cc56ed",
+        "mobilesdk_app_id": "1:389721425806:android:7298a87e8c96d13e30c6df",
         "android_client_info": {
-          "package_name": "kr.co.example.mobleprogramming"
+          "package_name": "kr.co.example.mobileprogramming"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCJsD_WYWlhIoHDNv3XCkAMH4vVCmfNtP4"
+          "current_key": "AIzaSyDBkNICviLUyhdY1Oa5dSv14xeVCelcjXA"
         }
       ],
       "services": {
