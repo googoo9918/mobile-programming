@@ -1,5 +1,6 @@
 package kr.co.example.mobileprogramming.model;
 
+import android.util.Log;
 import android.util.Pair;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class GameManager {
     private Player player1;
     private Player player2;  // null in single-player mode
     private Player currentPlayer;
+    private GameState gameState;
     private List<Pair<Integer, Card>> selectedCards;
     private boolean extendTurnFlag = false;
     private GameEventListener gameEventListener;
@@ -30,6 +32,8 @@ public class GameManager {
         this.currentPlayer = player1;
         this.currentRound = currentRound;
         this.selectedCards = new ArrayList<>();
+
+        this.gameState = new GameState(null, player1, player2, currentPlayer, currentRound);
     }
 
     public void startGame() {
@@ -183,6 +187,19 @@ public class GameManager {
         return true;
     }
 
+    public GameState getGameState() {
+        return gameState;
+    }
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+    }
+    public void updateGameState() {
+        if(gameState != null) {
+            gameState.setBoard(board);
+            gameState.setCurrentPlayer(currentPlayer);
+            gameState.setCurrentRound(currentRound);
+        }
+    }
     public Board getBoard() {
         return board;
     }

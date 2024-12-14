@@ -24,22 +24,36 @@ public class GameState implements Serializable {
         return board;
     }
 
+    public void setBoard(Board board) {
+        this.board = board;
+    }
+
     public Player getPlayer1() {
         return player1;
     }
 
+    public void setPlayer1(Player player1) {
+        this.player1 = player1;
+    }
     public Player getPlayer2() {
         return player2;
     }
-
+    public void setPlayer2(Player player2) {
+        this.player2 = player2;
+    }
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
 
+    public void setCurrentPlayer(Player player) {
+        currentPlayer = player;
+    }
     public int getCurrentRound() {
         return currentRound;
     }
-
+    public void setCurrentRound(int round) {
+            currentRound = round;
+    }
     public String getRoomId() { return roomId; }
 
     public String getState() { return state; }

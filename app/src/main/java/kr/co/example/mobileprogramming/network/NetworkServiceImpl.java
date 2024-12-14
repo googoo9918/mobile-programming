@@ -44,6 +44,7 @@ public class NetworkServiceImpl implements NetworkService {
     public void setDataReceivedListener(DataReceivedListener listener) {
     }
 
+    // 최초 멀티 연결
     public void connect(int roundInfo, String difficultyInfo, Consumer<Boolean> callback) {
         gamesRef = FirebaseDatabase.getInstance().getReference("games");
 
@@ -70,6 +71,7 @@ public class NetworkServiceImpl implements NetworkService {
         });
     }
 
+    // 라운드 수, 난이도에 해당하는 waiting 게임방 찾기
     private void findExistingRoom(int roundInfo, String difficultyInfo, Consumer<String> callback) {
         gamesRef.orderByChild("state").equalTo("waiting").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -142,6 +144,7 @@ public class NetworkServiceImpl implements NetworkService {
                 });
     }
 
+    // 게임 최초 생성 시 player1이 보드를 생성
     public void uploadBoard(Board board) {
         if (isPlayer1 && roomId != null) {
             // 보드 데이터를 Firebase에 업로드
@@ -157,6 +160,7 @@ public class NetworkServiceImpl implements NetworkService {
         }
     }
 
+    // 게임 참가 시 player2는 보드를 리슨
     public void listenForBoard(Consumer<List<Card>> callback) {
         gamesRef.child(roomId).child("board").child("cards")
                 .addListenerForSingleValueEvent(new ValueEventListener() {

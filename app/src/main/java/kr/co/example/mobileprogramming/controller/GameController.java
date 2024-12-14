@@ -228,16 +228,19 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         gameActivity.displayCards();
         revealAllCardsTemporarily();
         startGameTimer();
+        gameManager.updateGameState();
     }
 
     @Override
     public void onCardFlipped(int position, Card card) {
         gameActivity.refreshUI();
+        gameManager.updateGameState();
     }
 
     @Override
     public void onMatchFound(int position1, int position2) {
         gameActivity.showMatch(position1, position2);
+        gameManager.updateGameState();
     }
 
     @Override
@@ -255,6 +258,7 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
     @Override
     public void onTurnChanged(Player currentPlayer) {
         gameActivity.updateCurrentPlayer(currentPlayer);
+        gameManager.updateGameState();
     }
 
     @Override
