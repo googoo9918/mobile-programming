@@ -196,6 +196,20 @@ public class NetworkServiceImpl implements NetworkService {
                 });
     }
 
+    public void updateGameState(GameState gameState) {
+        Log.d("game", "network update called " + roomId);
+        if (roomId != null) {
+            gamesRef.child(roomId).child("gameState").setValue(gameState)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d("Firebase", "GameState updated successfully.");
+                    } else {
+                        Log.e("Firebase", "Failed to update GameState.", task.getException());
+                    }
+                });
+        }
+    }
+
     public void listenForGameState(Consumer<String> callback) {
         gamesRef.child(roomId).child("state").addValueEventListener(new ValueEventListener() {
             @Override
@@ -212,6 +226,4 @@ public class NetworkServiceImpl implements NetworkService {
             }
         });
     }
-
-
 }

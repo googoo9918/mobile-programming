@@ -199,6 +199,11 @@ public class GameManager {
             gameState.setCurrentPlayer(currentPlayer);
             gameState.setCurrentRound(currentRound);
         }
+
+        Log.d("game", "gameState");
+        Log.d("game", "current " + gameState.getCurrentPlayer().getName() + " " + gameState.getCurrentPlayer().getScore());
+        Log.d("game", "currnet " + gameState.getCurrentRound());
+        Log.d("game", "current player item " + gameState.getCurrentPlayer().getItems().size());
     }
     public Board getBoard() {
         return board;

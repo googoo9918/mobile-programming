@@ -22,12 +22,13 @@ import kr.co.example.mobileprogramming.model.Player;
 import kr.co.example.mobileprogramming.model.itemeffects.ItemEffect;
 import kr.co.example.mobileprogramming.network.DataReceivedListener;
 import kr.co.example.mobileprogramming.network.NetworkService;
+import kr.co.example.mobileprogramming.network.NetworkServiceImpl;
 import kr.co.example.mobileprogramming.view.GameActivity;
 
 public class GameController implements GameEventListener, GameErrorListener, OnItemSelectedListener, DataReceivedListener {
     private GameActivity gameActivity;
     private GameManager gameManager;
-    private NetworkService networkService;
+    private NetworkServiceImpl networkService;
 
     private Handler gameTimerHandler = new Handler();
     private Runnable gameTimerRunnable;
@@ -43,7 +44,7 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
     public GameController(GameActivity gameActivity, GameManager gameManager, NetworkService networkService) {
         this.gameActivity = gameActivity;
         this.gameManager = gameManager;
-        this.networkService = networkService;
+        this.networkService = (NetworkServiceImpl) networkService;
         this.isPaused = false;
         this.isUserPaused = false;
 
@@ -219,7 +220,49 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         }, revealTime);
     }
 
+    public void connectMulti(int roundInfo, String difficultyInfo) {
+        networkService.connect(roundInfo, difficultyInfo, success -> {
+            if (success) {
+                boolean isPlayer1 = networkService.isPlayer1;
+                gameActivity.showToast(isPlayer1 ? "You are Player 1" : "You are Player 2");
 
+                if (isPlayer1) {
+                    gameActivity.showLoadingScreen("Waiting for Player 2...");
+                    networkService.uploadBoard(gameManager.getBoard());
+                } else {
+                    networkService.listenForBoard(cards -> {
+                        if (cards != null) {
+                            gameActivity.runOnUiThread(() -> {
+                                gameManager.initializeBoard(cards);
+                                gameActivity.setBoardCards(cards);
+                            });
+                        } else {
+                            Log.e("GameController", "Failed to receive board data.");
+                        }
+                    });
+                }
+
+                // Listen for game state updates
+                listenForGameState();
+            } else {
+                Log.e("GameController", "Failed to connect to multiplayer room.");
+                gameActivity.showToast("Failed to connect to multiplayer room.");
+                gameActivity.finish(); // 게임 종료 처리
+            }
+        });
+    }
+
+    private void listenForGameState() {
+        networkService.listenForGameState(state -> {
+            if ("playing".equals(state)) {
+                gameActivity.runOnUiThread(() -> {
+                    Log.d("GameController", "Game state changed to playing. Starting game...");
+                    gameActivity.hideLoadingScreen();
+                    gameManager.startGame();
+                });
+            }
+        });
+    }
 
     @Override
     public void onGameStarted() {
@@ -228,19 +271,23 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         gameActivity.displayCards();
         revealAllCardsTemporarily();
         startGameTimer();
+
         gameManager.updateGameState();
+        networkService.updateGameState(gameManager.getGameState());
     }
 
     @Override
     public void onCardFlipped(int position, Card card) {
         gameActivity.refreshUI();
         gameManager.updateGameState();
+        networkService.updateGameState(gameManager.getGameState());
     }
 
     @Override
     public void onMatchFound(int position1, int position2) {
         gameActivity.showMatch(position1, position2);
         gameManager.updateGameState();
+        networkService.updateGameState(gameManager.getGameState());
     }
 
     @Override
@@ -252,6 +299,7 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
 
         // 아이템 UI 갱신
         gameActivity.updatePlayerItems(currentPlayer.getItems());
+        networkService.updateGameState(gameManager.getGameState());
     }
 
 
@@ -259,6 +307,7 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
     public void onTurnChanged(Player currentPlayer) {
         gameActivity.updateCurrentPlayer(currentPlayer);
         gameManager.updateGameState();
+        networkService.updateGameState(gameManager.getGameState());
     }
 
     @Override

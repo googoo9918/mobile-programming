@@ -113,84 +113,18 @@ public class GameActivity extends AppCompatActivity {
         // currentRound 설정 (여기서는 roundInfo를 currentRound로 삼지는 않았지만 필요하다면 GameManager 수정)
         // gameManager.setCurrentRound(roundInfo); // 필요시 GameManager에 setter 추가.
 
-        NetworkService networkService = new NetworkServiceImpl();
-
         initializeCardIds();
         setupBoard();
         gameManager.initializeBoard(boardCards);
 
-        gameController = new GameController(this, gameManager, networkService);
-        initializePauseUI();
+        gameController = new GameController(this, gameManager, new NetworkServiceImpl());
 
-        if(modeInfo == 2) {
-            connectMulti();
+        if (modeInfo == 2) {
+            gameController.connectMulti(roundInfo, difficultyInfo);
         } else {
             gameManager.startGame();
         }
     }
-
-    private void connectMulti() {
-        networkService = new NetworkServiceImpl();
-
-        networkService.connect(roundInfo, difficultyInfo, success -> {
-            if (success) {
-                // 연결 성공: Player1인지 Player2인지 확인
-                isPlayer1 = networkService.isPlayer1;
-
-                // 플레이어 정보를 Toast로 표시
-                Toast.makeText(this, isPlayer1 ? "You are Player 1" : "You are Player 2", Toast.LENGTH_SHORT).show();
-
-                // 초기 board 정보 송수신
-                if(isPlayer1) {
-                    showLoadingScreen("Waiting for Player 2...");
-                    networkService.uploadBoard(gameManager.getBoard());
-                } else {
-                    networkService.listenForBoard(cards -> {
-                        runOnUiThread(() -> {
-
-                            if (cards != null) {
-                                // 받은 보드를 UI에 반영
-                                gameManager.initializeBoard(cards);
-                                setBoardCards(cards);
-
-                                for (Card card : cards) {
-                                    if (card instanceof ItemCard) {
-                                        ItemCard itemCard = (ItemCard) card;
-                                        Log.d("Firebase", "ItemCard: " + itemCard.getItemType());
-                                    } else {
-                                        Log.d("Firebase", "Card: " + card.getId());
-                                    }
-                                }
-
-                            } else {
-                                Log.e("GameActivity", "Failed to receive board data.");
-                            }
-                        });
-                    });
-                }
-                // playing으로 방 상태가 변경되기를 대기
-                listenForGameState();
-            } else {
-                // 연결 실패 처리
-                Log.e("GameActivity", "Failed to connect to multiplayer room.");
-                Toast.makeText(this, "Failed to connect to multiplayer room.", Toast.LENGTH_LONG).show();
-                finish(); // 실패 시 액티비티 종료
-            }
-        });
-    }
-
-    private void listenForGameState() {
-        networkService.listenForGameState(state -> {
-            if ("playing".equals(state)) {
-                runOnUiThread(() -> {
-                    Log.d("GameActivity", "Game state changed to playing. Starting game...");
-                    hideLoadingScreen(); // 로딩 화면 숨기기
-                    gameManager.startGame(); // 게임 시작
-                });
-            }
-        });
-    }
-
 
     private void initializeUI() {
         if (modeInfo == 1) {
@@ -329,7 +263,6 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-
     public void displayCards() {
         GridLayout gridLayout = findViewById(R.id.cardGrid);
         gridLayout.removeAllViews();
@@ -456,7 +389,7 @@ public class GameActivity extends AppCompatActivity {
         currentPlayerTextView.setText(playerText);
     }
 
-    private void showLoadingScreen(String message) {
+    public void showLoadingScreen(String message) {
         if (loadingOverlay == null) {
             loadingOverlay = getLayoutInflater().inflate(R.layout.loading_overlay, null);
             ViewGroup rootView = findViewById(android.R.id.content);
@@ -473,8 +406,10 @@ public class GameActivity extends AppCompatActivity {
         loadingOverlay.setVisibility(View.VISIBLE);
     }
 
-    private void hideLoadingScreen() {
+    public void hideLoadingScreen() {
+        Log.d("game", "hide loading!");
         if (loadingOverlay != null) {
+            Log.d("game", "hide loading!");
             loadingOverlay.setVisibility(View.GONE);
         }
     }
@@ -577,7 +512,7 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    private void setBoardCards(List<Card> cards) {
+    public void setBoardCards(List<Card> cards) {
         this.boardCards = cards;
     }
 
