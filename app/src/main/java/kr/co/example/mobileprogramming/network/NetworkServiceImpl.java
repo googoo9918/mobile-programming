@@ -197,7 +197,6 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     public void updateGameState(GameState gameState) {
-        Log.d("game", "network update called " + roomId);
         if (roomId != null) {
             gamesRef.child(roomId).child("gameState").setValue(gameState)
                 .addOnCompleteListener(task -> {
@@ -210,6 +209,7 @@ public class NetworkServiceImpl implements NetworkService {
         }
     }
 
+    // 게임 방 state (waiting, playing) 변경 리슨
     public void listenForGameState(Consumer<String> callback) {
         gamesRef.child(roomId).child("state").addValueEventListener(new ValueEventListener() {
             @Override
@@ -226,4 +226,27 @@ public class NetworkServiceImpl implements NetworkService {
             }
         });
     }
+
+    // gameState 업데이트 리슨
+    public void listenForGameStateUpdates(Consumer<GameState> callback) {
+        if (roomId == null) {
+            Log.e("NetworkServiceImpl", "DatabaseReference or roomId is null. Cannot listen for game state updates.");
+            return;
+        }
+        gamesRef.child(roomId).child("gameState").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                GameState updatedGameState = snapshot.getValue(GameState.class);
+                if (updatedGameState != null) {
+                    callback.accept(updatedGameState); // 업데이트된 gameState 전달
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("NetworkServiceImpl", "Failed to listen for gameState updates: " + error.getMessage());
+            }
+        });
+    }
+
 }

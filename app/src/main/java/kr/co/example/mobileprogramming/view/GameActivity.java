@@ -407,9 +407,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void hideLoadingScreen() {
-        Log.d("game", "hide loading!");
         if (loadingOverlay != null) {
-            Log.d("game", "hide loading!");
             loadingOverlay.setVisibility(View.GONE);
         }
     }

@@ -14,6 +14,8 @@ public class Player {
     private int correctCount = 0;
     private int wrongCount = 0;
 
+    public Player() {}
+
     public Player(String name) {
         this.name = name;
         this.score = 0;

@@ -170,7 +170,6 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
 
     @Override
     public void onItemSelected(ItemType itemType) {
-        Log.d("Item", "item "+ itemType + " selected");
         Player currentPlayer = gameManager.getCurrentPlayer();
         boolean used = currentPlayer.useItem(itemType, gameManager);
         if (used) {
@@ -244,6 +243,9 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
 
                 // Listen for game state updates
                 listenForGameState();
+
+                // Listen for gameState object updates
+                listenForGameStateUpdates();
             } else {
                 Log.e("GameController", "Failed to connect to multiplayer room.");
                 gameActivity.showToast("Failed to connect to multiplayer room.");
@@ -256,7 +258,6 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         networkService.listenForGameState(state -> {
             if ("playing".equals(state)) {
                 gameActivity.runOnUiThread(() -> {
-                    Log.d("GameController", "Game state changed to playing. Starting game...");
                     gameActivity.hideLoadingScreen();
                     gameManager.startGame();
                 });
@@ -264,14 +265,31 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         });
     }
 
+    private void listenForGameStateUpdates() {
+        networkService.listenForGameStateUpdates(updatedGameState -> {
+            gameActivity.runOnUiThread(() -> {
+                // 현재 플레이어 업데이트
+                gameManager.setCurrentPlayer(updatedGameState.getCurrentPlayer());
+
+                // 플레이어 정보 업데이트
+                gameManager.setPlayers(updatedGameState.getPlayer1(), updatedGameState.getPlayer2());
+
+                // 보드 상태 업데이트
+                if (updatedGameState.getBoard() != null) {
+                    gameManager.initializeBoard(updatedGameState.getBoard().getCards());
+                    gameActivity.setBoardCards(updatedGameState.getBoard().getCards());
+                    gameActivity.refreshUI(); // UI 리프레시
+                }
+            });
+        });
+    }
+
     @Override
     public void onGameStarted() {
-        Log.d("game", "game start");
         gameActivity.initializeGameBoard(gameManager.getBoard());
         gameActivity.displayCards();
         revealAllCardsTemporarily();
         startGameTimer();
-
         gameManager.updateGameState();
         networkService.updateGameState(gameManager.getGameState());
     }

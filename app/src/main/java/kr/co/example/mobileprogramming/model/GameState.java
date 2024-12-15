@@ -12,6 +12,8 @@ public class GameState implements Serializable {
     private String roomId;
     private String state; // waiting or playing
 
+    public GameState() {}
+
     public GameState(Board board, Player player1, Player player2, Player currentPlayer, int currentRound) {
         this.board = board;
         this.player1 = player1;
