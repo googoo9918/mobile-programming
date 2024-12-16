@@ -74,6 +74,7 @@ public class GameManager {
 
         if (card1.getId() == card2.getId()) {
             // 매칭 성공
+            Log.d("player", "matching success");
             currentPlayer.addCorrect();
             card1.setMatched(true);
             card2.setMatched(true);
@@ -103,7 +104,9 @@ public class GameManager {
             selectedCards.clear();
         } else {
             // 매칭 실패
+            Log.d("player", "matching fail");
             currentPlayer.addWrong();
+            Log.d("player", "add wrong " + currentPlayer.getWrongCount());
             new android.os.Handler().postDelayed(() -> {
                 if (selectedCards.isEmpty()) {
                     return;
@@ -111,17 +114,25 @@ public class GameManager {
 
                 card1.setFlipped(false);
                 card2.setFlipped(false);
-                Log.d("hi", "card1 " + card1.isFlipped() + " card2 " + card2.isFlipped());
 
                 if(currentPlayer.getName().equals("Player 1")) {
                     gameState.setPlayer1(currentPlayer);
+                    gameState.getPlayer1().addWrong();
+                    Log.d("player", "add wrong " + currentPlayer.getWrongCount());
+                    Log.d("player", "put 1 " + gameState.getPlayer1().getScore());
+                    Log.d("player", "put 1 " + gameState.getPlayer1().getCorrectCount());
+                    Log.d("player", "put 1 " + gameState.getPlayer1().getWrongCount());
+
                 }
                 else {
                     gameState.setPlayer2(currentPlayer);
+                    gameState.getPlayer2().addWrong();
+                    Log.d("player", "put 2 " + gameState.getPlayer2().getScore());
+                    Log.d("player", "put 2 " + gameState.getPlayer2().getCorrectCount());
+                    Log.d("player", "put 2 " + gameState.getPlayer2().getWrongCount());
                 }
 
                 if (gameEventListener != null) {
-                    Log.d("hi", "flip back");
                     gameEventListener.onCardFlipped(selectedCards.get(0).first, card1);
                     gameEventListener.onCardFlipped(selectedCards.get(1).first, card2);
                 }
@@ -152,6 +163,7 @@ public class GameManager {
                 gameState.setPlayer2(currentPlayer);
                 gameState.setCurrentPlayer(player1);
             }
+
             if (gameEventListener != null) {
                 gameEventListener.onTurnChanged(currentPlayer);
             }
@@ -241,7 +253,6 @@ public class GameManager {
     }
 
     public void updateGameState(GameState gameState) {
-        Log.d("hi", "updateGameState " + gameState.getCurrentPlayer().getName());
         this.board = gameState.getBoard();
         this.player1 = gameState.getPlayer1();
         this.player2 = gameState.getPlayer2();
@@ -276,6 +287,12 @@ public class GameManager {
     public void setPlayers(Player player1, Player player2) {
         this.player1 = player1;
         this.player2 = player2;
+        this.gameState.setPlayer1(player1);
+        this.gameState.setPlayer2(player2);
+        Log.d("player", "copy test 1 score" + this.player1.getScore());
+        Log.d("player", "copy test 2 score" + this.player2.getScore());
+        Log.d("player", "copy test 1 score" + gameState.getPlayer1().getScore());
+        Log.d("player", "copy test 2 score" + gameState.getPlayer2().getScore());
     }
 
     public void setCurrentPlayer(Player currentPlayer) {

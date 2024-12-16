@@ -41,7 +41,7 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
     private boolean isPaused = false;
     private boolean isUserPaused = false;
 
-    private String username = "player1"; // player1 or player2
+    private String username = "Player 1"; // player1 or player2
 
     public GameController(GameActivity gameActivity, GameManager gameManager, NetworkService networkService) {
         this.gameActivity = gameActivity;
@@ -117,6 +117,10 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
 
     public void onCardSelected(int position) {
         if (isPaused) return;
+        if(!gameManager.getGameState().getCurrentPlayer().getName().equals(username)) {
+            Log.e("turn", "not your turn " + gameManager.getGameState().getCurrentPlayer().getName());
+            return;
+        }
 
         boolean success = gameManager.selectCard(position);
         if (success) {
@@ -279,13 +283,23 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
 
                 // 플레이어 정보 업데이트
                 gameManager.setPlayers(updatedGameState.getPlayer1(), updatedGameState.getPlayer2());
+                gameManager.updateGameState();
+                Log.d("player", "after player1 score: " + gameManager.getPlayer1().getScore());
+                Log.d("player", "after player1 correct: " + gameManager.getPlayer1().getCorrectCount());
+                Log.d("player", "after player1 wrong: " + gameManager.getPlayer1().getWrongCount());
 
+
+                Log.d("player", "after player2 score: " + gameManager.getPlayer2().getScore());
+                Log.d("player", "after player2 correct: " + gameManager.getPlayer2().getCorrectCount());
+                Log.d("player", "after player2 wrong: " + gameManager.getPlayer2().getWrongCount());
                 // 보드 상태 업데이트
                 if (updatedGameState.getBoard() != null) {
                     gameManager.initializeBoard(updatedGameState.getBoard().getCards());
                     gameActivity.setBoardCards(updatedGameState.getBoard().getCards());
                     gameActivity.refreshUI(); // UI 리프레시
                 }
+
+                gameManager.updateGameState();
             });
         });
     }
@@ -335,7 +349,6 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         Log.d("hi", "onturnchanged" + gameManager.getGameState().getCurrentPlayer().getName());
         Log.d("hi", gameManager.toString());
         gameActivity.updateCurrentPlayer(currentPlayer);
-//        gameManager.updateGameState();
         for(int i = 0; i < 36; i++) {
             // flip 되어있는데 match 되지 않은 카드
             if(gameManager.getGameState().getBoard().getCardAt(i).isFlipped() && !gameManager.getGameState().getBoard().getCardAt(i).isMatched()) {

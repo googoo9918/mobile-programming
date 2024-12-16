@@ -33,9 +33,16 @@ public class Player {
     public int getCorrectCount() {
         return correctCount;
     }
+    public void setCorrectCount(int cnt) {
+            this.correctCount = cnt;
+    }
 
     public int getWrongCount() {
         return wrongCount;
+    }
+
+    public void setWrongCount(int cnt) {
+        this.wrongCount = cnt;
     }
 
     public void addScore(int points) {

@@ -290,18 +290,23 @@ public class NetworkServiceImpl implements NetworkService {
                         Player player1 = player1Snapshot.getValue(Player.class);
                         updatedGameState.setPlayer1(player1);
                         Log.d("player", "1 score " + player1.getScore());
+                        Log.d("player", "1 correct " + player1.getCorrectCount());
+                        Log.d("player", "1 wrong " + player1.getWrongCount());
 
                         // Player 2 처리
                         DataSnapshot player2Snapshot = snapshot.child("player2");
                         Player player2 = player2Snapshot.getValue(Player.class);
                         updatedGameState.setPlayer2(player2);
                         Log.d("player", "2 score " + player2.getScore());
+                        Log.d("player", "2 correct " + player2.getCorrectCount());
+                        Log.d("player", "2 wrong " + player2.getWrongCount());
 
                         // Current Round 처리
                         int currentRound = snapshot.child("currentRound").getValue(Integer.class);
                         updatedGameState.setCurrentRound(currentRound);
 
                         callback.accept(updatedGameState); // 업데이트된 gameState 전달
+                        Log.d("manager", "turn " +gameManager.getGameState().getCurrentPlayer().getName());
                         Log.d("NetworkServiceImpl", "GameState updated and delivered.");
                     }
                 } catch (Exception e) {
