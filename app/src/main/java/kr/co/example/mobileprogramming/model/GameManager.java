@@ -76,14 +76,50 @@ public class GameManager {
             // 매칭 성공
             Log.d("player", "matching success");
             currentPlayer.addCorrect();
+
+            board.getCardAt(selectedCards.get(0).first).setMatched(true);
+            board.getCardAt(selectedCards.get(1).first).setMatched(true);
             card1.setMatched(true);
             card2.setMatched(true);
+
+            // 매칭 성공 시 flipped도 true로 유지
+            board.getCardAt(selectedCards.get(0).first).setFlipped(true);
+            board.getCardAt(selectedCards.get(1).first).setFlipped(true);
+            card1.setFlipped(true);
+            card2.setFlipped(true);
+
+            gameState.setBoard(board);
+
+            Log.d("ha", "board");
+
+            if (board.getCards().isEmpty()) {
+                Log.d("ha", "board.getCards() is empty");
+                return;
+            }
+
+            Log.d("ha", "board loaded");
+            for (Card card : board.getCards()) {
+                Log.d("ha", card.getType() + " " + card.isFlipped() + " " + card.isMatched());
+            }
+
+            Log.d("ha", "gameState board");
+
+            if(gameState.getBoard().getCards().isEmpty()) {
+                Log.d("ha", "gamestate board.getCards() is empty");
+                return;
+            }
+
+            Log.d("ha", "gamestate board loaded");
+            for (Card card : gameState.getBoard().getCards()) {
+                Log.d("ha", card.getType() + " " + card.isFlipped() + " " + card.isMatched());
+            }
 
             int scoreToAdd = 1; // 기본은 일반 카드 매칭시 1점
             if (card1.getType() == CardType.ITEM) {
                 // 아이템 카드라면 3점 부여
                 scoreToAdd = 3;
                 ItemCard itemCard = (ItemCard) card1;
+//                itemCard.setMatched(true);
                 ItemEffect itemEffect = itemCard.createItemEffect();
                 currentPlayer.addItemEffect(itemEffect);
                 if (gameEventListener != null) {
@@ -106,30 +142,21 @@ public class GameManager {
             // 매칭 실패
             Log.d("player", "matching fail");
             currentPlayer.addWrong();
-            Log.d("player", "add wrong " + currentPlayer.getWrongCount());
             new android.os.Handler().postDelayed(() -> {
                 if (selectedCards.isEmpty()) {
                     return;
                 }
 
-                card1.setFlipped(false);
-                card2.setFlipped(false);
+                board.getCardAt(selectedCards.get(0).first).setFlipped(false);
+                board.getCardAt(selectedCards.get(1).first).setFlipped(false);
 
                 if(currentPlayer.getName().equals("Player 1")) {
                     gameState.setPlayer1(currentPlayer);
                     gameState.getPlayer1().addWrong();
-                    Log.d("player", "add wrong " + currentPlayer.getWrongCount());
-                    Log.d("player", "put 1 " + gameState.getPlayer1().getScore());
-                    Log.d("player", "put 1 " + gameState.getPlayer1().getCorrectCount());
-                    Log.d("player", "put 1 " + gameState.getPlayer1().getWrongCount());
-
                 }
                 else {
                     gameState.setPlayer2(currentPlayer);
                     gameState.getPlayer2().addWrong();
-                    Log.d("player", "put 2 " + gameState.getPlayer2().getScore());
-                    Log.d("player", "put 2 " + gameState.getPlayer2().getCorrectCount());
-                    Log.d("player", "put 2 " + gameState.getPlayer2().getWrongCount());
                 }
 
                 if (gameEventListener != null) {
@@ -158,10 +185,12 @@ public class GameManager {
             if(currentPlayer.getName().equals("Player 1")) {
                 gameState.setPlayer1(currentPlayer);
                 gameState.setCurrentPlayer(player2);
+                currentPlayer = player2;
             }
             else {
                 gameState.setPlayer2(currentPlayer);
                 gameState.setCurrentPlayer(player1);
+                currentPlayer = player1;
             }
 
             if (gameEventListener != null) {

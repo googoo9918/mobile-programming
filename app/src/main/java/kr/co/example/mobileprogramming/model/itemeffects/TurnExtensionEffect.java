@@ -5,6 +5,9 @@ import kr.co.example.mobileprogramming.model.ItemType;
 import kr.co.example.mobileprogramming.model.Player;
 
 public class TurnExtensionEffect implements ItemEffect {
+    public TurnExtensionEffect() {
+
+    }
     @Override
     public void applyEffect(GameManager gameManager, Player player) {
         gameManager.setExtendTurnFlag(true);

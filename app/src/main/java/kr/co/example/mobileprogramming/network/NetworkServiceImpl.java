@@ -21,7 +21,9 @@ import kr.co.example.mobileprogramming.model.Card;
 import kr.co.example.mobileprogramming.model.GameManager;
 import kr.co.example.mobileprogramming.model.GameState;
 import kr.co.example.mobileprogramming.model.ItemCard;
+import kr.co.example.mobileprogramming.model.ItemType;
 import kr.co.example.mobileprogramming.model.Player;
+import kr.co.example.mobileprogramming.model.itemeffects.ItemEffect;
 
 public class NetworkServiceImpl implements NetworkService {
     private GameManager gameManager;
@@ -203,8 +205,6 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     public void updateGameState(GameState gameState) {
-        Log.d("hi", "updategamestate" + gameManager.getGameState().getCurrentPlayer().getName());
-        Log.d("hi", gameManager.toString());
         if (roomId != null) {
             gamesRef.child(roomId).child("gameState").setValue(gameState)
                 .addOnCompleteListener(task -> {
@@ -241,7 +241,6 @@ public class NetworkServiceImpl implements NetworkService {
             Log.e("NetworkServiceImpl", "DatabaseReference or roomId is null. Cannot listen for game state updates.");
             return;
         }
-        Log.d("hi", "listenforgamestate" + gameManager.getGameState().getCurrentPlayer().getName());
         gamesRef.child(roomId).child("gameState").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -249,15 +248,26 @@ public class NetworkServiceImpl implements NetworkService {
                     if (snapshot.exists()) {
                         GameState updatedGameState = new GameState();
 
+                        // Current Player 처리
+                        DataSnapshot currentPlayerSnapshot = snapshot.child("currentPlayer");
+                        Player currentPlayer = currentPlayerSnapshot.getValue(Player.class);
+
+                        updatedGameState.setCurrentPlayer(currentPlayer);
+
                         // Board 처리
                         DataSnapshot boardSnapshot = snapshot.child("board").child("cards");
                         List<Card> cards = new ArrayList<>();
                         for (DataSnapshot cardSnapshot : boardSnapshot.getChildren()) {
                             String type = cardSnapshot.child("type").getValue(String.class);
 
+
+
                             if ("ITEM".equals(type)) {
                                 ItemCard itemCard = cardSnapshot.getValue(ItemCard.class);
                                 if (itemCard != null) {
+                                    // ItemEffect를 생성하고 필요시 설정
+                                    ItemEffect effect = itemCard.createItemEffect();
+                                    itemCard.setMatched(cardSnapshot.child("matched").getValue(Boolean.class));
                                     cards.add(itemCard);
                                 }
                             } else if ("NORMAL".equals(type)) {
@@ -267,47 +277,26 @@ public class NetworkServiceImpl implements NetworkService {
                                 }
                             }
                         }
+
                         Board board = new Board(cards);
                         updatedGameState.setBoard(board);
-
-                        // Current Player 처리
-                        DataSnapshot currentPlayerSnapshot = snapshot.child("currentPlayer");
-                        Player currentPlayer = currentPlayerSnapshot.getValue(Player.class);
-
-                        // 내 턴인지 확인
-                        if (currentPlayer != null && currentPlayer.getName().equals(username)) {
-                            Log.d("manager", "current " +gameManager.getGameState().getCurrentPlayer().getName() + " " + currentPlayer.getName());
-                            if(currentPlayer.equals(gameManager.getGameState().getCurrentPlayer().getName())) {
-                                Log.d("NetworkServiceImpl", "It's my turn, skipping gameState update.");
-                                return; // 내 턴이면 업데이트 중단
-                            }
-                            Log.d("manager", "first update turn changed");
-                        }
-                        updatedGameState.setCurrentPlayer(currentPlayer);
 
                         // Player 1 처리
                         DataSnapshot player1Snapshot = snapshot.child("player1");
                         Player player1 = player1Snapshot.getValue(Player.class);
                         updatedGameState.setPlayer1(player1);
-                        Log.d("player", "1 score " + player1.getScore());
-                        Log.d("player", "1 correct " + player1.getCorrectCount());
-                        Log.d("player", "1 wrong " + player1.getWrongCount());
 
                         // Player 2 처리
                         DataSnapshot player2Snapshot = snapshot.child("player2");
                         Player player2 = player2Snapshot.getValue(Player.class);
                         updatedGameState.setPlayer2(player2);
-                        Log.d("player", "2 score " + player2.getScore());
-                        Log.d("player", "2 correct " + player2.getCorrectCount());
-                        Log.d("player", "2 wrong " + player2.getWrongCount());
 
                         // Current Round 처리
                         int currentRound = snapshot.child("currentRound").getValue(Integer.class);
                         updatedGameState.setCurrentRound(currentRound);
 
-                        callback.accept(updatedGameState); // 업데이트된 gameState 전달
-                        Log.d("manager", "turn " +gameManager.getGameState().getCurrentPlayer().getName());
-                        Log.d("NetworkServiceImpl", "GameState updated and delivered.");
+                        // 업데이트된 GameState 전달
+                        callback.accept(updatedGameState);
                     }
                 } catch (Exception e) {
                     Log.e("NetworkServiceImpl", "Failed to parse gameState: " + e.getMessage(), e);
@@ -316,9 +305,10 @@ public class NetworkServiceImpl implements NetworkService {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("NetworkServiceImpl", "Failed to listen for gameState updates: " + error.getMessage());
+                Log.e("NetworkServiceImpl", "Failed to listen for game state updates: " + error.getMessage());
             }
         });
     }
+
 
 }

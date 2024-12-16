@@ -80,6 +80,7 @@ public class GameActivity extends AppCompatActivity {
     private NetworkServiceImpl networkService;
     GameManager gameManager;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

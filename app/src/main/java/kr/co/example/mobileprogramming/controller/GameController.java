@@ -141,8 +141,8 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
                 checkGameOverCondition();
                 // 카드를 한 장만 뒤집은 경우에도 상태 전송 필요할 수 있음
                 if (!isSinglePlayer) {
-                    networkService.sendData(gameManager.toGameState());
-//                    networkService.updateGameState(gameManager.getGameState());
+//                    networkService.sendData(gameManager.toGameState());
+                    networkService.updateGameState(gameManager.getGameState());
                 }
             }
         } else {
@@ -249,8 +249,6 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
                     });
                 }
 
-                Log.d("user", "name is " + username);
-
                 // Listen for game state updates
                 listenForGameState();
 
@@ -284,14 +282,7 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
                 // 플레이어 정보 업데이트
                 gameManager.setPlayers(updatedGameState.getPlayer1(), updatedGameState.getPlayer2());
                 gameManager.updateGameState();
-                Log.d("player", "after player1 score: " + gameManager.getPlayer1().getScore());
-                Log.d("player", "after player1 correct: " + gameManager.getPlayer1().getCorrectCount());
-                Log.d("player", "after player1 wrong: " + gameManager.getPlayer1().getWrongCount());
 
-
-                Log.d("player", "after player2 score: " + gameManager.getPlayer2().getScore());
-                Log.d("player", "after player2 correct: " + gameManager.getPlayer2().getCorrectCount());
-                Log.d("player", "after player2 wrong: " + gameManager.getPlayer2().getWrongCount());
                 // 보드 상태 업데이트
                 if (updatedGameState.getBoard() != null) {
                     gameManager.initializeBoard(updatedGameState.getBoard().getCards());
@@ -316,7 +307,6 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
 
     @Override
     public void onCardFlipped(int position, Card card) {
-        Log.d("hi", "oncardflipped");
         gameManager.updateGameState();
         gameActivity.refreshUI();
         networkService.updateGameState(gameManager.getGameState());
@@ -327,12 +317,21 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         gameActivity.showMatch(position1, position2);
         gameManager.getGameState().getBoard().getCardAt(position1).setMatched(true);
         gameManager.getGameState().getBoard().getCardAt(position2).setMatched(true);
+        Log.d("hi", "matchfound flip but not matched");
+        for(int i = 0; i < 36; i++) {
+            // flip 되어있는데 match 되지 않은 카드
+            if(gameManager.getGameState().getBoard().getCardAt(i).isFlipped() && !gameManager.getGameState().getBoard().getCardAt(i).isMatched()) {
+                Log.d("hi", i + gameManager.getGameState().getBoard().getCardAt(i).getType().toString());
+            }
+        }
         gameManager.updateGameState();
         networkService.updateGameState(gameManager.getGameState());
     }
 
     @Override
     public void onItemAcquired(ItemCard itemCard) {
+        Log.d("hi", "onitemacquired");
+        Log.d("hi", "itemcard " + itemCard.isFlipped());
         // 아이템 카드 획득 이벤트
         // 현재 턴 플레이어가 아이템 획득
         Player currentPlayer = gameManager.getCurrentPlayer();
@@ -346,15 +345,25 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
 
     @Override
     public void onTurnChanged(Player currentPlayer) {
-        Log.d("hi", "onturnchanged" + gameManager.getGameState().getCurrentPlayer().getName());
-        Log.d("hi", gameManager.toString());
         gameActivity.updateCurrentPlayer(currentPlayer);
+
+        Log.d("hi", "onturnchanged");
         for(int i = 0; i < 36; i++) {
+            // flip 되어있는데 match 되지 않은 카드
+            if(gameManager.getGameState().getBoard().getCardAt(i).isFlipped()) {
+                Log.d("hi", i + " " + gameManager.getGameState().getBoard().getCardAt(i).getType().toString() + " " + gameManager.getGameState().getBoard().getCardAt(i).isFlipped() + gameManager.getGameState().getBoard().getCardAt(i).isMatched());
+            }
+        }
+
+        for(int i = 0; i < 36; i++) {
+            Card card = gameManager.getGameState().getBoard().getCardAt(i);
             // flip 되어있는데 match 되지 않은 카드
             if(gameManager.getGameState().getBoard().getCardAt(i).isFlipped() && !gameManager.getGameState().getBoard().getCardAt(i).isMatched()) {
                 gameManager.getGameState().getBoard().getCardAt(i).setFlipped(false);
+                Log.d("flip", i + gameManager.getGameState().getBoard().getCardAt(i).getType().toString());
             }
         }
+        gameActivity.refreshUI();
         networkService.updateGameState(gameManager.getGameState());
     }
 

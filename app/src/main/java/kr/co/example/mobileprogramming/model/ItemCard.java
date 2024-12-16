@@ -11,7 +11,9 @@ import kr.co.example.mobileprogramming.model.itemeffects.TurnExtensionEffect;
 public class ItemCard extends Card {
     private ItemType itemType;
 
-    public ItemCard() {}
+    public ItemCard() {
+        super();
+    }
 
     public ItemCard(int id, ItemType itemType) {
         super(id, CardType.ITEM);
