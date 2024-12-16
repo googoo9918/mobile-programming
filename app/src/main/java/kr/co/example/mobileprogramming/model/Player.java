@@ -47,7 +47,9 @@ public class Player {
     }
 
     public void addItemEffect(ItemEffect itemEffect) {
-        items.add(itemEffect);
+        if (items == null) {
+            items = new ArrayList<>();
+        }items.add(itemEffect);
     }
 
 

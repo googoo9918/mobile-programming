@@ -18,15 +18,21 @@ import java.util.function.Consumer;
 
 import kr.co.example.mobileprogramming.model.Board;
 import kr.co.example.mobileprogramming.model.Card;
+import kr.co.example.mobileprogramming.model.GameManager;
 import kr.co.example.mobileprogramming.model.GameState;
 import kr.co.example.mobileprogramming.model.ItemCard;
+import kr.co.example.mobileprogramming.model.Player;
 
 public class NetworkServiceImpl implements NetworkService {
-
+    private GameManager gameManager;
     private DatabaseReference gamesRef;
-
     private String roomId;
-    public boolean isPlayer1;
+    public String username;
+
+    public NetworkServiceImpl(GameManager gameManager) {
+        this.gameManager = gameManager;
+        this.gamesRef = FirebaseDatabase.getInstance().getReference("games");
+    }
 
     @Override
     public void connect() {
@@ -51,7 +57,7 @@ public class NetworkServiceImpl implements NetworkService {
         findExistingRoom(roundInfo, difficultyInfo, existingRoomId -> {
             if (existingRoomId != null) {
                 roomId = existingRoomId;
-                isPlayer1 = false; // 기존 방에 참여자는 Player 2
+                username = "Player 2"; // 기존 방에 참여자는 Player 2
                 joinExistingRoom(existingRoomId, success -> {
                     if (success) {
                         callback.accept(true);
@@ -125,7 +131,7 @@ public class NetworkServiceImpl implements NetworkService {
         }
 
         roomId = newRoomId;
-        isPlayer1 = true;
+        username = "Player 1";
 
         Map<String, Object> roomData = new HashMap<>();
         roomData.put("roomId", newRoomId);
@@ -146,7 +152,7 @@ public class NetworkServiceImpl implements NetworkService {
 
     // 게임 최초 생성 시 player1이 보드를 생성
     public void uploadBoard(Board board) {
-        if (isPlayer1 && roomId != null) {
+        if (username.equals("Player 1") && roomId != null) {
             // 보드 데이터를 Firebase에 업로드
             gamesRef.child(roomId).child("board").setValue(board)
                     .addOnCompleteListener(task -> {
@@ -197,6 +203,8 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     public void updateGameState(GameState gameState) {
+        Log.d("hi", "updategamestate" + gameManager.getGameState().getCurrentPlayer().getName());
+        Log.d("hi", gameManager.toString());
         if (roomId != null) {
             gamesRef.child(roomId).child("gameState").setValue(gameState)
                 .addOnCompleteListener(task -> {
@@ -233,12 +241,71 @@ public class NetworkServiceImpl implements NetworkService {
             Log.e("NetworkServiceImpl", "DatabaseReference or roomId is null. Cannot listen for game state updates.");
             return;
         }
+        Log.d("hi", "listenforgamestate" + gameManager.getGameState().getCurrentPlayer().getName());
         gamesRef.child(roomId).child("gameState").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                GameState updatedGameState = snapshot.getValue(GameState.class);
-                if (updatedGameState != null) {
-                    callback.accept(updatedGameState); // 업데이트된 gameState 전달
+                try {
+                    if (snapshot.exists()) {
+                        GameState updatedGameState = new GameState();
+
+                        // Board 처리
+                        DataSnapshot boardSnapshot = snapshot.child("board").child("cards");
+                        List<Card> cards = new ArrayList<>();
+                        for (DataSnapshot cardSnapshot : boardSnapshot.getChildren()) {
+                            String type = cardSnapshot.child("type").getValue(String.class);
+
+                            if ("ITEM".equals(type)) {
+                                ItemCard itemCard = cardSnapshot.getValue(ItemCard.class);
+                                if (itemCard != null) {
+                                    cards.add(itemCard);
+                                }
+                            } else if ("NORMAL".equals(type)) {
+                                Card card = cardSnapshot.getValue(Card.class);
+                                if (card != null) {
+                                    cards.add(card);
+                                }
+                            }
+                        }
+                        Board board = new Board(cards);
+                        updatedGameState.setBoard(board);
+
+                        // Current Player 처리
+                        DataSnapshot currentPlayerSnapshot = snapshot.child("currentPlayer");
+                        Player currentPlayer = currentPlayerSnapshot.getValue(Player.class);
+
+                        // 내 턴인지 확인
+                        if (currentPlayer != null && currentPlayer.getName().equals(username)) {
+                            Log.d("manager", "current " +gameManager.getGameState().getCurrentPlayer().getName() + " " + currentPlayer.getName());
+                            if(currentPlayer.equals(gameManager.getGameState().getCurrentPlayer().getName())) {
+                                Log.d("NetworkServiceImpl", "It's my turn, skipping gameState update.");
+                                return; // 내 턴이면 업데이트 중단
+                            }
+                            Log.d("manager", "first update turn changed");
+                        }
+                        updatedGameState.setCurrentPlayer(currentPlayer);
+
+                        // Player 1 처리
+                        DataSnapshot player1Snapshot = snapshot.child("player1");
+                        Player player1 = player1Snapshot.getValue(Player.class);
+                        updatedGameState.setPlayer1(player1);
+                        Log.d("player", "1 score " + player1.getScore());
+
+                        // Player 2 처리
+                        DataSnapshot player2Snapshot = snapshot.child("player2");
+                        Player player2 = player2Snapshot.getValue(Player.class);
+                        updatedGameState.setPlayer2(player2);
+                        Log.d("player", "2 score " + player2.getScore());
+
+                        // Current Round 처리
+                        int currentRound = snapshot.child("currentRound").getValue(Integer.class);
+                        updatedGameState.setCurrentRound(currentRound);
+
+                        callback.accept(updatedGameState); // 업데이트된 gameState 전달
+                        Log.d("NetworkServiceImpl", "GameState updated and delivered.");
+                    }
+                } catch (Exception e) {
+                    Log.e("NetworkServiceImpl", "Failed to parse gameState: " + e.getMessage(), e);
                 }
             }
 

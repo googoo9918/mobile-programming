@@ -90,6 +90,13 @@ public class GameManager {
                 }
             }
             currentPlayer.addScore(scoreToAdd);
+
+            if(currentPlayer.getName().equals("Player 1")) {
+                gameState.setPlayer1(currentPlayer);
+            }
+            else {
+                gameState.setPlayer2(currentPlayer);
+            }
             if (gameEventListener != null) {
                 gameEventListener.onMatchFound(selectedCards.get(0).first, selectedCards.get(1).first);
             }
@@ -102,10 +109,19 @@ public class GameManager {
                     return;
                 }
 
-                card1.flip();
-                card2.flip();
+                card1.setFlipped(false);
+                card2.setFlipped(false);
+                Log.d("hi", "card1 " + card1.isFlipped() + " card2 " + card2.isFlipped());
+
+                if(currentPlayer.getName().equals("Player 1")) {
+                    gameState.setPlayer1(currentPlayer);
+                }
+                else {
+                    gameState.setPlayer2(currentPlayer);
+                }
 
                 if (gameEventListener != null) {
+                    Log.d("hi", "flip back");
                     gameEventListener.onCardFlipped(selectedCards.get(0).first, card1);
                     gameEventListener.onCardFlipped(selectedCards.get(1).first, card2);
                 }
@@ -121,13 +137,21 @@ public class GameManager {
     }
 
     private void switchTurn() {
+        Log.d("hi", "switchturn" + gameState.getCurrentPlayer().getName());
         if(extendTurnFlag) {
             extendTurnFlag = false;
             return;
         }
 
         if (player2 != null) {
-            currentPlayer = (currentPlayer == player1) ? player2 : player1;
+            if(currentPlayer.getName().equals("Player 1")) {
+                gameState.setPlayer1(currentPlayer);
+                gameState.setCurrentPlayer(player2);
+            }
+            else {
+                gameState.setPlayer2(currentPlayer);
+                gameState.setCurrentPlayer(player1);
+            }
             if (gameEventListener != null) {
                 gameEventListener.onTurnChanged(currentPlayer);
             }
@@ -217,6 +241,7 @@ public class GameManager {
     }
 
     public void updateGameState(GameState gameState) {
+        Log.d("hi", "updateGameState " + gameState.getCurrentPlayer().getName());
         this.board = gameState.getBoard();
         this.player1 = gameState.getPlayer1();
         this.player2 = gameState.getPlayer2();

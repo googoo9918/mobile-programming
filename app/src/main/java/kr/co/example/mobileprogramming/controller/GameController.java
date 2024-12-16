@@ -41,6 +41,8 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
     private boolean isPaused = false;
     private boolean isUserPaused = false;
 
+    private String username = "player1"; // player1 or player2
+
     public GameController(GameActivity gameActivity, GameManager gameManager, NetworkService networkService) {
         this.gameActivity = gameActivity;
         this.gameManager = gameManager;
@@ -128,7 +130,7 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
 
                     // 여기서 변경된 상태 전송(2인용 모드일 경우)
                     if (!isSinglePlayer) {
-                        networkService.sendData(gameManager.toGameState());
+                        networkService.updateGameState(gameManager.getGameState());
                     }
                 }, 1000);
             } else {
@@ -136,6 +138,7 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
                 // 카드를 한 장만 뒤집은 경우에도 상태 전송 필요할 수 있음
                 if (!isSinglePlayer) {
                     networkService.sendData(gameManager.toGameState());
+//                    networkService.updateGameState(gameManager.getGameState());
                 }
             }
         } else {
@@ -222,13 +225,14 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
     public void connectMulti(int roundInfo, String difficultyInfo) {
         networkService.connect(roundInfo, difficultyInfo, success -> {
             if (success) {
-                boolean isPlayer1 = networkService.isPlayer1;
+                boolean isPlayer1 = networkService.username.equals("Player 1");
                 gameActivity.showToast(isPlayer1 ? "You are Player 1" : "You are Player 2");
 
                 if (isPlayer1) {
                     gameActivity.showLoadingScreen("Waiting for Player 2...");
                     networkService.uploadBoard(gameManager.getBoard());
                 } else {
+                    username = "Player 2";
                     networkService.listenForBoard(cards -> {
                         if (cards != null) {
                             gameActivity.runOnUiThread(() -> {
@@ -240,6 +244,8 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
                         }
                     });
                 }
+
+                Log.d("user", "name is " + username);
 
                 // Listen for game state updates
                 listenForGameState();
@@ -296,14 +302,17 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
 
     @Override
     public void onCardFlipped(int position, Card card) {
-        gameActivity.refreshUI();
+        Log.d("hi", "oncardflipped");
         gameManager.updateGameState();
+        gameActivity.refreshUI();
         networkService.updateGameState(gameManager.getGameState());
     }
 
     @Override
     public void onMatchFound(int position1, int position2) {
         gameActivity.showMatch(position1, position2);
+        gameManager.getGameState().getBoard().getCardAt(position1).setMatched(true);
+        gameManager.getGameState().getBoard().getCardAt(position2).setMatched(true);
         gameManager.updateGameState();
         networkService.updateGameState(gameManager.getGameState());
     }
@@ -323,8 +332,16 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
 
     @Override
     public void onTurnChanged(Player currentPlayer) {
+        Log.d("hi", "onturnchanged" + gameManager.getGameState().getCurrentPlayer().getName());
+        Log.d("hi", gameManager.toString());
         gameActivity.updateCurrentPlayer(currentPlayer);
-        gameManager.updateGameState();
+//        gameManager.updateGameState();
+        for(int i = 0; i < 36; i++) {
+            // flip 되어있는데 match 되지 않은 카드
+            if(gameManager.getGameState().getBoard().getCardAt(i).isFlipped() && !gameManager.getGameState().getBoard().getCardAt(i).isMatched()) {
+                gameManager.getGameState().getBoard().getCardAt(i).setFlipped(false);
+            }
+        }
         networkService.updateGameState(gameManager.getGameState());
     }
 

@@ -80,8 +80,6 @@ public class GameActivity extends AppCompatActivity {
     private NetworkServiceImpl networkService;
     GameManager gameManager;
 
-    private boolean isPlayer1;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,7 +115,7 @@ public class GameActivity extends AppCompatActivity {
         setupBoard();
         gameManager.initializeBoard(boardCards);
 
-        gameController = new GameController(this, gameManager, new NetworkServiceImpl());
+        gameController = new GameController(this, gameManager, new NetworkServiceImpl(gameManager));
 
         if (modeInfo == 2) {
             gameController.connectMulti(roundInfo, difficultyInfo);
