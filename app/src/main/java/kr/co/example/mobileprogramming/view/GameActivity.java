@@ -121,6 +121,7 @@ public class GameActivity extends AppCompatActivity {
         if (modeInfo == 2) {
             gameController.connectMulti(roundInfo, difficultyInfo);
         } else {
+            initializePauseUI();
             gameManager.startGame();
         }
     }
@@ -532,6 +533,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d("hi", "onpause");
         // 게임이 진행 중일 때만 일시정지 실행
         if (!gameController.isPaused() && !gameController.isUserPaused() && !isFinishing()) {
             gameController.pauseGame();
