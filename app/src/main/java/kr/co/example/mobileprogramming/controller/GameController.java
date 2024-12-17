@@ -180,7 +180,7 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         Player currentPlayer = gameManager.getCurrentPlayer();
         boolean used = currentPlayer.useItem(itemType, gameManager);
         if (used) {
-            gameActivity.updatePlayerItems(currentPlayer.getItems());
+//            gameActivity.updatePlayerItems(currentPlayer.getItems());
 
             // 아이템 사용 후 상태 전송
             if (!isSinglePlayer) {
@@ -288,6 +288,7 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
                     gameManager.initializeBoard(updatedGameState.getBoard().getCards());
                     gameActivity.setBoardCards(updatedGameState.getBoard().getCards());
                     gameActivity.refreshUI(); // UI 리프레시
+                    checkGameOverCondition();
                 }
 
                 gameManager.updateGameState();
@@ -338,7 +339,7 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         gameActivity.showItemAcquired(itemCard);
 
         // 아이템 UI 갱신
-        gameActivity.updatePlayerItems(currentPlayer.getItems());
+//        gameActivity.updatePlayerItems(currentPlayer.getItems());
         networkService.updateGameState(gameManager.getGameState());
     }
 

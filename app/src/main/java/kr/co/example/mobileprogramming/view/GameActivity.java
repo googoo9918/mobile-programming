@@ -205,7 +205,7 @@ public class GameActivity extends AppCompatActivity {
         boardCards = new ArrayList<>();
 
         // 모드 체크 (1인용/2인용). 2인용일 때만 아이템 카드 로직 적용
-        if (modeInfo == 2) {
+        if (modeInfo == 2 && false) {   // temp
 
             List<Integer> itemCardIds = new ArrayList<>();
             itemCardIds.add(R.drawable.item_doublescore);
@@ -343,6 +343,7 @@ public class GameActivity extends AppCompatActivity {
                 .show();
     }
 
+    /*
     public void updatePlayerItems(List<ItemEffect> items) {
         LinearLayout itemCardContainer = findViewById(R.id.itemCardContainer);
         if (itemCardContainer == null) return;
@@ -382,6 +383,7 @@ public class GameActivity extends AppCompatActivity {
                 return 0;
         }
     }
+*/
 
     public void updateCurrentPlayer(Player currnetPlayer) {
         // 2인용일 경우 현재 플레이어 정보 표시 가능
