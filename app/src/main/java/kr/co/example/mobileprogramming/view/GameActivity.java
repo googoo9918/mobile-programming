@@ -3,6 +3,7 @@ package kr.co.example.mobileprogramming.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -29,6 +30,7 @@ import kr.co.example.mobileprogramming.model.CardType;
 import kr.co.example.mobileprogramming.model.Difficulty;
 import kr.co.example.mobileprogramming.model.GameManager;
 import kr.co.example.mobileprogramming.model.GameResult;
+import kr.co.example.mobileprogramming.model.GameState;
 import kr.co.example.mobileprogramming.model.ItemCard;
 import kr.co.example.mobileprogramming.model.ItemType;
 import kr.co.example.mobileprogramming.model.Player;
@@ -56,6 +58,12 @@ public class GameActivity extends AppCompatActivity {
     private TextView player2CorrectTextView;
     private TextView player2WrongTextView;
 
+    // 멀티플레이 현재 플레이어 표시
+    private TextView currentPlayerTextView;
+
+    // 플레이어 대기 로딩
+    private View loadingOverlay;
+    
     private static final int BOARD_SIZE = 36;
     private List<Integer> cardIds;
     private List<Card> boardCards;
@@ -68,6 +76,10 @@ public class GameActivity extends AppCompatActivity {
     private View pauseOverlay;
     private ImageButton pauseButton;
     private Button resumeButton;
+
+    private NetworkServiceImpl networkService;
+    GameManager gameManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,19 +108,22 @@ public class GameActivity extends AppCompatActivity {
         Player player1 = new Player("Player 1");
         Player player2 = (modeInfo == 2) ? new Player("Player 2") : null;
 
-        GameManager gameManager = new GameManager(diffEnum, totalRounds, roundInfo, player1, player2);
+        gameManager = new GameManager(diffEnum, totalRounds, roundInfo, player1, player2);
         // currentRound 설정 (여기서는 roundInfo를 currentRound로 삼지는 않았지만 필요하다면 GameManager 수정)
         // gameManager.setCurrentRound(roundInfo); // 필요시 GameManager에 setter 추가.
-
-        NetworkService networkService = new NetworkServiceImpl();
 
         initializeCardIds();
         setupBoard();
         gameManager.initializeBoard(boardCards);
 
-        gameController = new GameController(this, gameManager, networkService);
-        initializePauseUI();
-        gameManager.startGame();
+        gameController = new GameController(this, gameManager, new NetworkServiceImpl(gameManager));
+
+        if (modeInfo == 2) {
+            gameController.connectMulti(roundInfo, difficultyInfo);
+        } else {
+            initializePauseUI();
+            gameManager.startGame();
+        }
     }
 
     private void initializeUI() {
@@ -133,6 +148,8 @@ public class GameActivity extends AppCompatActivity {
             player1WrongTextView = findViewById(R.id.player1WrongTextView);
             player2CorrectTextView = findViewById(R.id.player2CorrectTextView);
             player2WrongTextView = findViewById(R.id.player2WrongTextView);
+
+            currentPlayerTextView = findViewById(R.id.currentPlayerTextView);
 
             roundTextMulti.setText("라운드: " + roundInfo + "/" + totalRounds);
             modeTextMulti.setText("게임 모드: 2인용");
@@ -188,7 +205,7 @@ public class GameActivity extends AppCompatActivity {
         boardCards = new ArrayList<>();
 
         // 모드 체크 (1인용/2인용). 2인용일 때만 아이템 카드 로직 적용
-        if (modeInfo == 2) {
+        if (modeInfo == 2 && false) {   // temp
 
             List<Integer> itemCardIds = new ArrayList<>();
             itemCardIds.add(R.drawable.item_doublescore);
@@ -245,7 +262,6 @@ public class GameActivity extends AppCompatActivity {
             throw new IllegalArgumentException("Unknown item resource id: " + itemResourceId);
         }
     }
-
 
     public void displayCards() {
         GridLayout gridLayout = findViewById(R.id.cardGrid);
@@ -327,6 +343,7 @@ public class GameActivity extends AppCompatActivity {
                 .show();
     }
 
+    /*
     public void updatePlayerItems(List<ItemEffect> items) {
         LinearLayout itemCardContainer = findViewById(R.id.itemCardContainer);
         if (itemCardContainer == null) return;
@@ -366,9 +383,35 @@ public class GameActivity extends AppCompatActivity {
                 return 0;
         }
     }
+*/
 
-    public void updateCurrentPlayer(Player player) {
+    public void updateCurrentPlayer(Player currnetPlayer) {
         // 2인용일 경우 현재 플레이어 정보 표시 가능
+        String playerText = "Current Player: " + currnetPlayer.getName(); // 플레이어 이름
+        currentPlayerTextView.setText(playerText);
+    }
+
+    public void showLoadingScreen(String message) {
+        if (loadingOverlay == null) {
+            loadingOverlay = getLayoutInflater().inflate(R.layout.loading_overlay, null);
+            ViewGroup rootView = findViewById(android.R.id.content);
+            if (rootView != null) {
+                rootView.addView(loadingOverlay);
+            }
+        }
+
+        TextView loadingMessage = loadingOverlay.findViewById(R.id.loadingMessage);
+        if (loadingMessage != null) {
+            loadingMessage.setText(message);
+        }
+
+        loadingOverlay.setVisibility(View.VISIBLE);
+    }
+
+    public void hideLoadingScreen() {
+        if (loadingOverlay != null) {
+            loadingOverlay.setVisibility(View.GONE);
+        }
     }
 
     public void showMatch(int position1, int position2) {
@@ -469,6 +512,10 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    public void setBoardCards(List<Card> cards) {
+        this.boardCards = cards;
+    }
+
     public void showPauseOverlay() {
         pauseOverlay.setVisibility(View.VISIBLE);
         pauseButton.setEnabled(false);
@@ -479,9 +526,16 @@ public class GameActivity extends AppCompatActivity {
         pauseButton.setEnabled(true);
     }
 
+    public void onItemUseButtonClicked(View v) {
+        if(gameController != null) {
+            gameController.onItemUseRequested();
+        }
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d("hi", "onpause");
         // 게임이 진행 중일 때만 일시정지 실행
         if (!gameController.isPaused() && !gameController.isUserPaused() && !isFinishing()) {
             gameController.pauseGame();

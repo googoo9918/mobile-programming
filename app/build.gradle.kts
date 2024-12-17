@@ -46,6 +46,9 @@ dependencies {
     // Gson 라이브러리 추가
     implementation("com.google.code.gson:gson:2.10.1") // 최신 버전 사용 가능
 
+    // firebase realtime database
+    implementation("com.google.firebase:firebase-database:20.2.0")
+
     // 테스트 라이브러리
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

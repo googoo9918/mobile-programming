@@ -89,7 +89,32 @@
             android:text="P2 Wrong:0"/>
     </LinearLayout>
 
+    <!-- Current Player -->
+
     <!-- Score -->
+    <LinearLayout
+        android:id="@+id/currentPlayerLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/correctWrongLayout">
+
+        <TextView
+            android:id="@+id/currentPlayerTextView"
+            android:layout_width="236dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Current Player: player 1"
+            tools:layout_editor_absoluteX="178dp"
+            tools:layout_editor_absoluteY="24dp" />
+    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/scoreLayout"
         android:layout_width="0dp"
@@ -168,7 +193,8 @@
                 android:layout_height="wrap_content"
                 android:text="아이템 사용"
                 android:layout_gravity="center"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="8dp"
+                android:onClick="onItemUseButtonClicked" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -181,9 +207,9 @@
         android:columnCount="6"
         android:rowCount="6"
         android:useDefaultMargins="true"
-        app:layout_constraintTop_toBottomOf="@id/scoreLayout"
         app:layout_constraintBottom_toTopOf="@id/itemCardArea"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/scoreLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

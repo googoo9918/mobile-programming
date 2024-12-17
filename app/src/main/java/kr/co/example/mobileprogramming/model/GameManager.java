@@ -1,5 +1,6 @@
 package kr.co.example.mobileprogramming.model;
 
+import android.util.Log;
 import android.util.Pair;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class GameManager {
     private Player player1;
     private Player player2;  // null in single-player mode
     private Player currentPlayer;
+    private GameState gameState;
     private List<Pair<Integer, Card>> selectedCards;
     private boolean extendTurnFlag = false;
     private GameEventListener gameEventListener;
@@ -30,6 +32,8 @@ public class GameManager {
         this.currentPlayer = player1;
         this.currentRound = currentRound;
         this.selectedCards = new ArrayList<>();
+
+        this.gameState = new GameState(null, player1, player2, currentPlayer, currentRound);
     }
 
     public void startGame() {
@@ -39,10 +43,7 @@ public class GameManager {
     }
 
     public void initializeBoard(List<Card> boardCards) {
-        // 6x6 고정
-        int rows = 6;
-        int columns = 6;
-        this.board = new Board(rows, columns, boardCards);
+        this.board = new Board(boardCards);
     }
 
     public boolean selectCard(int position) {
@@ -73,15 +74,52 @@ public class GameManager {
 
         if (card1.getId() == card2.getId()) {
             // 매칭 성공
+            Log.d("player", "matching success");
             currentPlayer.addCorrect();
-            card1.setMatched();
-            card2.setMatched();
+
+            board.getCardAt(selectedCards.get(0).first).setMatched(true);
+            board.getCardAt(selectedCards.get(1).first).setMatched(true);
+            card1.setMatched(true);
+            card2.setMatched(true);
+
+            // 매칭 성공 시 flipped도 true로 유지
+            board.getCardAt(selectedCards.get(0).first).setFlipped(true);
+            board.getCardAt(selectedCards.get(1).first).setFlipped(true);
+            card1.setFlipped(true);
+            card2.setFlipped(true);
+
+            gameState.setBoard(board);
+
+            Log.d("ha", "board");
+
+            if (board.getCards().isEmpty()) {
+                Log.d("ha", "board.getCards() is empty");
+                return;
+            }
+
+            Log.d("ha", "board loaded");
+            for (Card card : board.getCards()) {
+                Log.d("ha", card.getType() + " " + card.isFlipped() + " " + card.isMatched());
+            }
+
+            Log.d("ha", "gameState board");
+
+            if(gameState.getBoard().getCards().isEmpty()) {
+                Log.d("ha", "gamestate board.getCards() is empty");
+                return;
+            }
+
+            Log.d("ha", "gamestate board loaded");
+            for (Card card : gameState.getBoard().getCards()) {
+                Log.d("ha", card.getType() + " " + card.isFlipped() + " " + card.isMatched());
+            }
 
             int scoreToAdd = 1; // 기본은 일반 카드 매칭시 1점
             if (card1.getType() == CardType.ITEM) {
                 // 아이템 카드라면 3점 부여
                 scoreToAdd = 3;
                 ItemCard itemCard = (ItemCard) card1;
+//                itemCard.setMatched(true);
                 ItemEffect itemEffect = itemCard.createItemEffect();
                 currentPlayer.addItemEffect(itemEffect);
                 if (gameEventListener != null) {
@@ -89,20 +127,37 @@ public class GameManager {
                 }
             }
             currentPlayer.addScore(scoreToAdd);
+
+            if(currentPlayer.getName().equals("Player 1")) {
+                gameState.setPlayer1(currentPlayer);
+            }
+            else {
+                gameState.setPlayer2(currentPlayer);
+            }
             if (gameEventListener != null) {
                 gameEventListener.onMatchFound(selectedCards.get(0).first, selectedCards.get(1).first);
             }
             selectedCards.clear();
         } else {
             // 매칭 실패
+            Log.d("player", "matching fail");
             currentPlayer.addWrong();
             new android.os.Handler().postDelayed(() -> {
                 if (selectedCards.isEmpty()) {
                     return;
                 }
 
-                card1.flip();
-                card2.flip();
+                board.getCardAt(selectedCards.get(0).first).setFlipped(false);
+                board.getCardAt(selectedCards.get(1).first).setFlipped(false);
+
+                if(currentPlayer.getName().equals("Player 1")) {
+                    gameState.setPlayer1(currentPlayer);
+                    gameState.getPlayer1().addWrong();
+                }
+                else {
+                    gameState.setPlayer2(currentPlayer);
+                    gameState.getPlayer2().addWrong();
+                }
 
                 if (gameEventListener != null) {
                     gameEventListener.onCardFlipped(selectedCards.get(0).first, card1);
@@ -120,13 +175,24 @@ public class GameManager {
     }
 
     private void switchTurn() {
+        Log.d("hi", "switchturn" + gameState.getCurrentPlayer().getName());
         if(extendTurnFlag) {
             extendTurnFlag = false;
             return;
         }
 
         if (player2 != null) {
-            currentPlayer = (currentPlayer == player1) ? player2 : player1;
+            if(currentPlayer.getName().equals("Player 1")) {
+                gameState.setPlayer1(currentPlayer);
+                gameState.setCurrentPlayer(player2);
+                currentPlayer = player2;
+            }
+            else {
+                gameState.setPlayer2(currentPlayer);
+                gameState.setCurrentPlayer(player1);
+                currentPlayer = player1;
+            }
+
             if (gameEventListener != null) {
                 gameEventListener.onTurnChanged(currentPlayer);
             }
@@ -186,6 +252,19 @@ public class GameManager {
         return true;
     }
 
+    public GameState getGameState() {
+        return gameState;
+    }
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+    }
+    public void updateGameState() {
+        if(gameState != null) {
+            gameState.setBoard(board);
+            gameState.setCurrentPlayer(currentPlayer);
+            gameState.setCurrentRound(currentRound);
+        }
+    }
     public Board getBoard() {
         return board;
     }
@@ -228,5 +307,24 @@ public class GameManager {
 
     public List<Pair<Integer, Card>> getSelectedCards() {
         return selectedCards;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
+    }
+
+    public void setPlayers(Player player1, Player player2) {
+        this.player1 = player1;
+        this.player2 = player2;
+        this.gameState.setPlayer1(player1);
+        this.gameState.setPlayer2(player2);
+        Log.d("player", "copy test 1 score" + this.player1.getScore());
+        Log.d("player", "copy test 2 score" + this.player2.getScore());
+        Log.d("player", "copy test 1 score" + gameState.getPlayer1().getScore());
+        Log.d("player", "copy test 2 score" + gameState.getPlayer2().getScore());
+    }
+
+    public void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
     }
 }

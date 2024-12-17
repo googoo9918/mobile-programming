@@ -14,6 +14,8 @@ public class Player {
     private int correctCount = 0;
     private int wrongCount = 0;
 
+    public Player() {}
+
     public Player(String name) {
         this.name = name;
         this.score = 0;
@@ -31,9 +33,16 @@ public class Player {
     public int getCorrectCount() {
         return correctCount;
     }
+    public void setCorrectCount(int cnt) {
+            this.correctCount = cnt;
+    }
 
     public int getWrongCount() {
         return wrongCount;
+    }
+
+    public void setWrongCount(int cnt) {
+        this.wrongCount = cnt;
     }
 
     public void addScore(int points) {
@@ -45,7 +54,9 @@ public class Player {
     }
 
     public void addItemEffect(ItemEffect itemEffect) {
-        items.add(itemEffect);
+        if (items == null) {
+            items = new ArrayList<>();
+        }items.add(itemEffect);
     }
 
 

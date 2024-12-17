@@ -3,6 +3,7 @@ package kr.co.example.mobileprogramming.controller;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.util.Pair;
 
 import java.util.List;
@@ -21,12 +22,13 @@ import kr.co.example.mobileprogramming.model.Player;
 import kr.co.example.mobileprogramming.model.itemeffects.ItemEffect;
 import kr.co.example.mobileprogramming.network.DataReceivedListener;
 import kr.co.example.mobileprogramming.network.NetworkService;
+import kr.co.example.mobileprogramming.network.NetworkServiceImpl;
 import kr.co.example.mobileprogramming.view.GameActivity;
 
 public class GameController implements GameEventListener, GameErrorListener, OnItemSelectedListener, DataReceivedListener {
     private GameActivity gameActivity;
     private GameManager gameManager;
-    private NetworkService networkService;
+    private NetworkServiceImpl networkService;
 
     private Handler gameTimerHandler = new Handler();
     private Runnable gameTimerRunnable;
@@ -39,10 +41,12 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
     private boolean isPaused = false;
     private boolean isUserPaused = false;
 
+    private String username = "Player 1"; // player1 or player2
+
     public GameController(GameActivity gameActivity, GameManager gameManager, NetworkService networkService) {
         this.gameActivity = gameActivity;
         this.gameManager = gameManager;
-        this.networkService = networkService;
+        this.networkService = (NetworkServiceImpl) networkService;
         this.isPaused = false;
         this.isUserPaused = false;
 
@@ -113,6 +117,10 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
 
     public void onCardSelected(int position) {
         if (isPaused) return;
+        if(!gameManager.getGameState().getCurrentPlayer().getName().equals(username)) {
+            Log.e("turn", "not your turn " + gameManager.getGameState().getCurrentPlayer().getName());
+            return;
+        }
 
         boolean success = gameManager.selectCard(position);
         if (success) {
@@ -126,14 +134,15 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
 
                     // 여기서 변경된 상태 전송(2인용 모드일 경우)
                     if (!isSinglePlayer) {
-                        networkService.sendData(gameManager.toGameState());
+                        networkService.updateGameState(gameManager.getGameState());
                     }
                 }, 1000);
             } else {
                 checkGameOverCondition();
                 // 카드를 한 장만 뒤집은 경우에도 상태 전송 필요할 수 있음
                 if (!isSinglePlayer) {
-                    networkService.sendData(gameManager.toGameState());
+//                    networkService.sendData(gameManager.toGameState());
+                    networkService.updateGameState(gameManager.getGameState());
                 }
             }
         } else {
@@ -171,7 +180,7 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         Player currentPlayer = gameManager.getCurrentPlayer();
         boolean used = currentPlayer.useItem(itemType, gameManager);
         if (used) {
-            gameActivity.updatePlayerItems(currentPlayer.getItems());
+//            gameActivity.updatePlayerItems(currentPlayer.getItems());
 
             // 아이템 사용 후 상태 전송
             if (!isSinglePlayer) {
@@ -217,7 +226,75 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         }, revealTime);
     }
 
+    public void connectMulti(int roundInfo, String difficultyInfo) {
+        networkService.connect(roundInfo, difficultyInfo, success -> {
+            if (success) {
+                boolean isPlayer1 = networkService.username.equals("Player 1");
+                gameActivity.showToast(isPlayer1 ? "You are Player 1" : "You are Player 2");
 
+                if (isPlayer1) {
+                    gameActivity.showLoadingScreen("Waiting for Player 2...");
+                    networkService.uploadBoard(gameManager.getBoard());
+                } else {
+                    username = "Player 2";
+                    networkService.listenForBoard(cards -> {
+                        if (cards != null) {
+                            gameActivity.runOnUiThread(() -> {
+                                gameManager.initializeBoard(cards);
+                                gameActivity.setBoardCards(cards);
+                            });
+                        } else {
+                            Log.e("GameController", "Failed to receive board data.");
+                        }
+                    });
+                }
+
+                // Listen for game state updates
+                listenForGameState();
+
+                // Listen for gameState object updates
+                listenForGameStateUpdates();
+            } else {
+                Log.e("GameController", "Failed to connect to multiplayer room.");
+                gameActivity.showToast("Failed to connect to multiplayer room.");
+                gameActivity.finish(); // 게임 종료 처리
+            }
+        });
+    }
+
+    private void listenForGameState() {
+        networkService.listenForGameState(state -> {
+            if ("playing".equals(state)) {
+                gameActivity.runOnUiThread(() -> {
+                    gameActivity.hideLoadingScreen();
+                    gameManager.startGame();
+                });
+            }
+        });
+    }
+
+    private void listenForGameStateUpdates() {
+        networkService.listenForGameStateUpdates(updatedGameState -> {
+            gameActivity.runOnUiThread(() -> {
+                // 현재 플레이어 업데이트
+                gameManager.setCurrentPlayer(updatedGameState.getCurrentPlayer());
+
+                // 플레이어 정보 업데이트
+                gameManager.setPlayers(updatedGameState.getPlayer1(), updatedGameState.getPlayer2());
+                gameManager.updateGameState();
+
+                // 보드 상태 업데이트
+                if (updatedGameState.getBoard() != null) {
+                    gameManager.initializeBoard(updatedGameState.getBoard().getCards());
+                    gameActivity.setBoardCards(updatedGameState.getBoard().getCards());
+                    gameActivity.refreshUI(); // UI 리프레시
+                    checkGameOverCondition();
+                }
+
+                gameManager.updateGameState();
+            });
+        });
+    }
 
     @Override
     public void onGameStarted() {
@@ -225,33 +302,70 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         gameActivity.displayCards();
         revealAllCardsTemporarily();
         startGameTimer();
+        gameManager.updateGameState();
+        networkService.updateGameState(gameManager.getGameState());
     }
 
     @Override
     public void onCardFlipped(int position, Card card) {
+        gameManager.updateGameState();
         gameActivity.refreshUI();
+        networkService.updateGameState(gameManager.getGameState());
     }
 
     @Override
     public void onMatchFound(int position1, int position2) {
         gameActivity.showMatch(position1, position2);
+        gameManager.getGameState().getBoard().getCardAt(position1).setMatched(true);
+        gameManager.getGameState().getBoard().getCardAt(position2).setMatched(true);
+        Log.d("hi", "matchfound flip but not matched");
+        for(int i = 0; i < 36; i++) {
+            // flip 되어있는데 match 되지 않은 카드
+            if(gameManager.getGameState().getBoard().getCardAt(i).isFlipped() && !gameManager.getGameState().getBoard().getCardAt(i).isMatched()) {
+                Log.d("hi", i + gameManager.getGameState().getBoard().getCardAt(i).getType().toString());
+            }
+        }
+        gameManager.updateGameState();
+        networkService.updateGameState(gameManager.getGameState());
     }
 
     @Override
     public void onItemAcquired(ItemCard itemCard) {
+        Log.d("hi", "onitemacquired");
+        Log.d("hi", "itemcard " + itemCard.isFlipped());
         // 아이템 카드 획득 이벤트
         // 현재 턴 플레이어가 아이템 획득
         Player currentPlayer = gameManager.getCurrentPlayer();
         gameActivity.showItemAcquired(itemCard);
 
         // 아이템 UI 갱신
-        gameActivity.updatePlayerItems(currentPlayer.getItems());
+//        gameActivity.updatePlayerItems(currentPlayer.getItems());
+        networkService.updateGameState(gameManager.getGameState());
     }
 
 
     @Override
     public void onTurnChanged(Player currentPlayer) {
         gameActivity.updateCurrentPlayer(currentPlayer);
+
+        Log.d("hi", "onturnchanged");
+        for(int i = 0; i < 36; i++) {
+            // flip 되어있는데 match 되지 않은 카드
+            if(gameManager.getGameState().getBoard().getCardAt(i).isFlipped()) {
+                Log.d("hi", i + " " + gameManager.getGameState().getBoard().getCardAt(i).getType().toString() + " " + gameManager.getGameState().getBoard().getCardAt(i).isFlipped() + gameManager.getGameState().getBoard().getCardAt(i).isMatched());
+            }
+        }
+
+        for(int i = 0; i < 36; i++) {
+            Card card = gameManager.getGameState().getBoard().getCardAt(i);
+            // flip 되어있는데 match 되지 않은 카드
+            if(gameManager.getGameState().getBoard().getCardAt(i).isFlipped() && !gameManager.getGameState().getBoard().getCardAt(i).isMatched()) {
+                gameManager.getGameState().getBoard().getCardAt(i).setFlipped(false);
+                Log.d("flip", i + gameManager.getGameState().getBoard().getCardAt(i).getType().toString());
+            }
+        }
+        gameActivity.refreshUI();
+        networkService.updateGameState(gameManager.getGameState());
     }
 
     @Override

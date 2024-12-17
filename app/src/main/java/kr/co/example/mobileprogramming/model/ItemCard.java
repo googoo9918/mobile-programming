@@ -11,6 +11,10 @@ import kr.co.example.mobileprogramming.model.itemeffects.TurnExtensionEffect;
 public class ItemCard extends Card {
     private ItemType itemType;
 
+    public ItemCard() {
+        super();
+    }
+
     public ItemCard(int id, ItemType itemType) {
         super(id, CardType.ITEM);
         this.itemType = itemType;
@@ -36,6 +40,10 @@ public class ItemCard extends Card {
 
     public ItemType getItemType() {
         return itemType;
+    }
+
+    public void setItemType(ItemType type) {
+        this.itemType = type;
     }
 
 }

@@ -6,12 +6,12 @@ import java.util.List;
 
 public class Board {
     private List<Card> cards;
-    private int rows;
-    private int columns;
+    private int rows = 6;
+    private int columns = 6;
 
-    public Board(int rows, int columns, List<Card> cards) {
-        this.rows = this.rows;
-        this.columns = this.columns;
+    public Board() {}
+
+    public Board(List<Card> cards) {
         this.cards = cards;
     }
 
