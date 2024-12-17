@@ -35,6 +35,9 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
     private GameManager gameManager;
     private NetworkServiceImpl networkService;
 
+    private Handler gameHandler = new Handler(Looper.getMainLooper());
+    private Runnable gameLoopRunnable;
+
     private Handler gameTimerHandler = new Handler();
     private Runnable gameTimerRunnable;
 
@@ -64,6 +67,20 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         isSinglePlayer = (gameManager.getPlayer2() == null);
 
         setupTimer();
+
+        // 게임 루프 Runnable 초기화
+        gameLoopRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (!isPaused) {
+                    gameManager.updateGameState();
+                    gameActivity.refreshUI(); // UI 갱신
+                    gameHandler.postDelayed(this, 16); // 약 60 FPS 유지
+                }
+            }
+        };
+
+        startGameLoop();
     }
 
     private void setupTimer() {
@@ -489,6 +506,15 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         onNetworkError("서버와의 연결이 종료되었습니다.");
     }
 
+    private void startGameLoop() {
+        gameHandler.post(gameLoopRunnable);
+    }
+
+    public void stopGame() {
+        gameHandler.removeCallbacks(gameLoopRunnable); // 게임 루프 중지
+    }
+
+
     public void onDestroy() {
         stopGameTimer();
         networkService.disconnect();
@@ -524,6 +550,7 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
             }
             gameActivity.refreshUI();
             gameActivity.hidePauseOverlay();
+            startGameLoop();
         }
     }
 
