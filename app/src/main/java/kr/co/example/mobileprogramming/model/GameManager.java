@@ -90,30 +90,6 @@ public class GameManager {
 
             gameState.setBoard(board);
 
-            Log.d("ha", "board");
-
-            if (board.getCards().isEmpty()) {
-                Log.d("ha", "board.getCards() is empty");
-                return;
-            }
-
-            Log.d("ha", "board loaded");
-            for (Card card : board.getCards()) {
-                Log.d("ha", card.getType() + " " + card.isFlipped() + " " + card.isMatched());
-            }
-
-            Log.d("ha", "gameState board");
-
-            if(gameState.getBoard().getCards().isEmpty()) {
-                Log.d("ha", "gamestate board.getCards() is empty");
-                return;
-            }
-
-            Log.d("ha", "gamestate board loaded");
-            for (Card card : gameState.getBoard().getCards()) {
-                Log.d("ha", card.getType() + " " + card.isFlipped() + " " + card.isMatched());
-            }
-
             int scoreToAdd = 1; // 기본은 일반 카드 매칭시 1점
             if (card1.getType() == CardType.ITEM) {
                 // 아이템 카드라면 3점 부여

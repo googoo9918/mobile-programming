@@ -476,11 +476,12 @@ public class GameActivity extends AppCompatActivity {
             // Pause 버튼 설정
             pauseButton = findViewById(R.id.pauseButton);
             if (pauseButton != null) {
-                pauseButton.setOnClickListener(v -> {
-                    if (gameController != null) {
-                        gameController.pauseGame();
-                    }
-                });
+//                pauseButton.setOnClickListener(v -> {
+//                    if (gameController != null) {
+//                        gameController.pauseGame();
+//                    }
+//                });
+                pauseButton.setOnClickListener(v -> gameController.pauseGame());
             }
 
             // Pause 오버레이 설정
@@ -488,11 +489,12 @@ public class GameActivity extends AppCompatActivity {
             if (pauseOverlay != null) {
                 resumeButton = pauseOverlay.findViewById(R.id.resumeButton);
                 if (resumeButton != null) {
-                    resumeButton.setOnClickListener(v -> {
-                        if (gameController != null) {
-                            gameController.resumeGame();
-                        }
-                    });
+//                    resumeButton.setOnClickListener(v -> {
+//                        if (gameController != null) {
+//                            gameController.resumeGame();
+//                        }
+//                    });
+                    resumeButton.setOnClickListener(v -> gameController.resumeGame());
                 }
 
                 // 오버레이를 루트 레이아웃에 추가

@@ -31,17 +31,18 @@ public class ResultActivity extends AppCompatActivity {
         difficultyText.setText("난이도: " + difficulty);
         int seconds = (int) (timeSpent / 1000) % 60;
         int minutes = (int) (timeSpent / 1000) / 60;
-        timeText.setText(String.format("걸린 시간: %02d:%02d", minutes, seconds));
 
         if (mode == 1) {
             int correct = intent.getIntExtra("CORRECT", 0);
             int wrong = intent.getIntExtra("WRONG", 0);
             infoText.setText("맞힌 횟수: " + correct + ", 틀린 횟수: " + wrong);
+            timeText.setText(String.format("걸린 시간: %02d:%02d", minutes, seconds));
         } else {
             String winnerName = intent.getStringExtra("WINNER_NAME");
             int winnerCorrect = intent.getIntExtra("WINNER_CORRECT", 0);
             int winnerWrong = intent.getIntExtra("WINNER_WRONG", 0);
             infoText.setText("승자: " + winnerName + "\n맞힌 횟수: " + winnerCorrect + ", 틀린 횟수: " + winnerWrong);
+            timeText.setText("");
         }
 
         if (currentRound < totalRounds) {

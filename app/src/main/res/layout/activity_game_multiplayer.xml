@@ -158,45 +158,45 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <LinearLayout
-            android:id="@+id/itemCardLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="12dp">
+<!--        <LinearLayout-->
+<!--            android:id="@+id/itemCardLayout"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical"-->
+<!--            android:padding="12dp">-->
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="내 아이템 카드"
-                android:gravity="center"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp"/>
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="내 아이템 카드"-->
+<!--                android:gravity="center"-->
+<!--                android:textStyle="bold"-->
+<!--                android:layout_marginBottom="8dp"/>-->
 
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+<!--            <HorizontalScrollView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content">-->
 
-                <LinearLayout
-                    android:id="@+id/itemCardContainer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="80dp"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-                    <!-- 아이템 카드 동적 추가 영역 -->
-                </LinearLayout>
-            </HorizontalScrollView>
+<!--                <LinearLayout-->
+<!--                    android:id="@+id/itemCardContainer"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="80dp"-->
+<!--                    android:orientation="horizontal"-->
+<!--                    android:gravity="center_vertical">-->
+<!--                    &lt;!&ndash; 아이템 카드 동적 추가 영역 &ndash;&gt;-->
+<!--                </LinearLayout>-->
+<!--            </HorizontalScrollView>-->
 
-            <Button
-                android:id="@+id/useItemButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="아이템 사용"
-                android:layout_gravity="center"
-                android:layout_marginTop="8dp"
-                android:onClick="onItemUseButtonClicked" />
+<!--            <Button-->
+<!--                android:id="@+id/useItemButton"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="아이템 사용"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_marginTop="8dp"-->
+<!--                android:onClick="onItemUseButtonClicked" />-->
 
-        </LinearLayout>
+<!--        </LinearLayout>-->
     </androidx.cardview.widget.CardView>
 
     <!-- 카드 그리드 (중앙 영역) -->

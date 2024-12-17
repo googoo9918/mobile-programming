@@ -6,7 +6,12 @@ import android.os.Looper;
 import android.util.Log;
 import android.util.Pair;
 
+import com.google.firebase.functions.FirebaseFunctions;
+
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import kr.co.example.mobileprogramming.events.GameErrorListener;
 import kr.co.example.mobileprogramming.events.GameEventListener;
@@ -29,6 +34,9 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
     private GameActivity gameActivity;
     private GameManager gameManager;
     private NetworkServiceImpl networkService;
+
+    private Handler gameHandler = new Handler(Looper.getMainLooper());
+    private Runnable gameLoopRunnable;
 
     private Handler gameTimerHandler = new Handler();
     private Runnable gameTimerRunnable;
@@ -59,6 +67,20 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         isSinglePlayer = (gameManager.getPlayer2() == null);
 
         setupTimer();
+
+        // 게임 루프 Runnable 초기화
+        gameLoopRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (!isPaused) {
+                    gameManager.updateGameState();
+                    gameActivity.refreshUI(); // UI 갱신
+                    gameHandler.postDelayed(this, 16); // 약 60 FPS 유지
+                }
+            }
+        };
+
+        startGameLoop();
     }
 
     private void setupTimer() {
@@ -282,6 +304,7 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
                 // 플레이어 정보 업데이트
                 gameManager.setPlayers(updatedGameState.getPlayer1(), updatedGameState.getPlayer2());
                 gameManager.updateGameState();
+                gameActivity.updateScoreUI(updatedGameState.getPlayer1(), updatedGameState.getPlayer2());
 
                 // 보드 상태 업데이트
                 if (updatedGameState.getBoard() != null) {
@@ -377,13 +400,17 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         } else {
             timeSpent = elapsedTime;
         }
-        GameResult result = gameManager.getGameResult();
-        Player winner = result.getWinner();
 
+        GameResult gameResult = gameManager.getGameResult();
+        Player winner = gameResult.getWinner();
 
         isPaused = true;  // 타이머 중지를 위해 true 로 설정
         isUserPaused = true;  // onPause 에서 자동 일시 정지 방지를 위해 true 로 설정
 
+        if (networkService.roomId == null) {
+            Log.e("GameController", "Room ID is missing!");
+            return;
+        }
 
         Intent intent = new Intent(gameActivity, kr.co.example.mobileprogramming.view.ResultActivity.class);
         intent.putExtra("MODE", isSinglePlayer ? 1 : 2);
@@ -392,20 +419,60 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
         intent.putExtra("TOTAL_ROUNDS", gameManager.getTotalRounds());
         intent.putExtra("CURRENT_ROUND", gameManager.getCurrentRound());
 
-        if (isSinglePlayer) {
-            // 1인용: currentPlayer는 player1
-            Player p = gameManager.getPlayer1();
-            intent.putExtra("CORRECT", p.getCorrectCount());
-            intent.putExtra("WRONG", p.getWrongCount());
-        } else {
-            // 2인용: 승자 정보
+        if(!isSinglePlayer) {
             intent.putExtra("WINNER_NAME", winner.getName());
             intent.putExtra("WINNER_CORRECT", winner.getCorrectCount());
             intent.putExtra("WINNER_WRONG", winner.getWrongCount());
+        } else {
+            Player p = gameManager.getPlayer1();
+            intent.putExtra("CORRECT", p.getCorrectCount());
+            intent.putExtra("WRONG", p.getWrongCount());
         }
-
         gameActivity.startActivity(intent);
         gameActivity.finish();
+
+//        // Firebase Cloud Function 호출
+//        FirebaseFunctions functions = FirebaseFunctions.getInstance();
+//
+//        Map<String, Object> req = new HashMap<>();
+//        req.put("roomId", networkService.roomId);
+//        functions
+//                .getHttpsCallable("determineWinner") // Cloud Function 이름
+//                .call(req) // roomId 전달
+//                .addOnSuccessListener(result -> {
+//                    Map<String, Object> data = (Map<String, Object>) result.getData();
+//                    String winnerName = (String) data.get("winner");
+//
+//                    if (isSinglePlayer) {
+//                        // 1인용: currentPlayer는 player1
+//                        Player p = gameManager.getPlayer1();
+//                        intent.putExtra("CORRECT", p.getCorrectCount());
+//                        intent.putExtra("WRONG", p.getWrongCount());
+//                    } else {
+//                        // 서버에서 받아온 승자 정보
+//                        intent.putExtra("WINNER_NAME", winnerName);
+//                        if(winnerName.equals("DRAW")) {
+//                            intent.putExtra("CORRECT", 0);
+//                            intent.putExtra("WRONG", 0);
+//                        }
+//                        else if(winnerName.equals("Player 1")){
+//                            intent.putExtra("CORRECT", gameManager.getGameState().getPlayer1().getCorrectCount());
+//                            intent.putExtra("WRONG", gameManager.getGameState().getPlayer1().getWrongCount());
+//                        }
+//                        else if(winnerName.equals("Player 2")) {
+//                            intent.putExtra("CORRECT", gameManager.getGameState().getPlayer2().getCorrectCount());
+//                            intent.putExtra("WRONG", gameManager.getGameState().getPlayer2().getWrongCount());
+//                        }
+//
+//                    }
+//                })
+//                .addOnFailureListener(e -> {
+//                    intent.putExtra("WINNER_NAME", winner.getName());
+//                    intent.putExtra("WINNER_CORRECT", winner.getCorrectCount());
+//                    intent.putExtra("WINNER_WRONG", winner.getWrongCount());
+//                });
+//        gameActivity.startActivity(intent);
+//        gameActivity.finish();
     }
 
     @Override
@@ -438,6 +505,15 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
     public void onConnectionClosed() {
         onNetworkError("서버와의 연결이 종료되었습니다.");
     }
+
+    private void startGameLoop() {
+        gameHandler.post(gameLoopRunnable);
+    }
+
+    public void stopGame() {
+        gameHandler.removeCallbacks(gameLoopRunnable); // 게임 루프 중지
+    }
+
 
     public void onDestroy() {
         stopGameTimer();
@@ -474,6 +550,7 @@ public class GameController implements GameEventListener, GameErrorListener, OnI
             }
             gameActivity.refreshUI();
             gameActivity.hidePauseOverlay();
+            startGameLoop();
         }
     }
 
