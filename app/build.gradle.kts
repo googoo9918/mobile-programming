@@ -49,6 +49,9 @@ dependencies {
     // firebase realtime database
     implementation("com.google.firebase:firebase-database:20.2.0")
 
+    // firebase functions
+    implementation("com.google.firebase:firebase-functions")
+
     // 테스트 라이브러리
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
