@@ -28,7 +28,7 @@ import kr.co.example.mobileprogramming.model.itemeffects.ItemEffect;
 public class NetworkServiceImpl implements NetworkService {
     private GameManager gameManager;
     private DatabaseReference gamesRef;
-    private String roomId;
+    public String roomId;
     public String username;
 
     public NetworkServiceImpl(GameManager gameManager) {
